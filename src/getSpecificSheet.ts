@@ -14,7 +14,6 @@ const getSpecificSheet = async (sheetId: string) => {
 
     // Fetch the sheet by ID
     const sheet = await smartsheet.sheets.getSheet({ id: sheetId });
-
     return {
       success: true,
       sheet: {
@@ -32,7 +31,6 @@ const getSpecificSheet = async (sheetId: string) => {
       },
     };
   } catch (error) {
-    console.error('Error fetching sheet:', error);
     return { success: false, message: 'Failed to fetch sheet', error };
   }
 };
