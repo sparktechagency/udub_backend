@@ -10,7 +10,7 @@ export interface TUser {
   address: string;
   password: string;
   passwordChangedAt?: Date;
-  role: 'user' | 'admin' | 'superAdmin';
+  role: (typeof USER_ROLE)[keyof typeof USER_ROLE];
   isBlock: boolean;
   resetCode: number;
   isResetVerified: boolean;

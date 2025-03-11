@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { TUser, UserModel } from './user.interface';
 import config from '../../config';
 import bcrypt from 'bcrypt';
+import { USER_ROLE } from './user.constant';
 
 const userSchema = new Schema<TUser>(
   {
@@ -25,7 +26,7 @@ const userSchema = new Schema<TUser>(
     },
     role: {
       type: String,
-      enum: ['user', 'team', 'player', 'superAdmin'],
+      enum: Object.values(USER_ROLE),
       required: true,
     },
     isBlock: {
