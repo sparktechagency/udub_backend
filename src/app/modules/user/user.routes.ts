@@ -16,7 +16,13 @@ router.post(
 );
 router.patch(
   '/update-profile',
-  auth(USER_ROLE.user),
+  auth(
+    USER_ROLE.user,
+    USER_ROLE.manager,
+    USER_ROLE.finance,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+  ),
   uploadFile(),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {
@@ -30,7 +36,13 @@ router.patch(
 
 router.get(
   '/get-my-profile',
-  auth(USER_ROLE.user, USER_ROLE.player, USER_ROLE.team, USER_ROLE.superAdmin),
+  auth(
+    USER_ROLE.user,
+    USER_ROLE.manager,
+    USER_ROLE.finance,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+  ),
   userControllers.getMyProfile,
 );
 
