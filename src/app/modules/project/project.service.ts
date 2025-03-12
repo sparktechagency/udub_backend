@@ -52,5 +52,28 @@ const getAllProject = async (query: Record<string, unknown>) => {
   };
 };
 
-const ProjectServices = { createProject, getAllProject };
+// get singel projet
+const getSingleProject = async (id: string) => {
+  const result = await Project.findById(id);
+  return result;
+};
+
+const deleteProject = async (id: string) => {
+  const project = await Project.findById(id);
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+  const result = await Project.findByIdAndDelete(id);
+
+  // TOOD: need to delete corrospoding images and documents
+
+  return result;
+};
+
+const ProjectServices = {
+  createProject,
+  getAllProject,
+  getSingleProject,
+  deleteProject,
+};
 export default ProjectServices;

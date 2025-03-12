@@ -19,6 +19,8 @@ const createProject = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+//
 const getAllProject = catchAsync(async (req, res) => {
   const result = await projectServices.getAllProject(req.query);
   sendResponse(res, {
@@ -29,5 +31,30 @@ const getAllProject = catchAsync(async (req, res) => {
   });
 });
 
-const ProjectController = { createProject, getAllProject };
+// get single project
+const getSingleProject = catchAsync(async (req, res) => {
+  const result = await projectServices.getSingleProject(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Project retrieved successfully',
+    data: result,
+  });
+});
+const deleteProject = catchAsync(async (req, res) => {
+  const result = await projectServices.deleteProject(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Project deleted successfully',
+    data: result,
+  });
+});
+
+const ProjectController = {
+  createProject,
+  getAllProject,
+  getSingleProject,
+  deleteProject,
+};
 export default ProjectController;

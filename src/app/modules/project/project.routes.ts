@@ -35,4 +35,22 @@ router.get(
   ProjectController.getAllProject,
 );
 
+router.get(
+  '/get-single-project/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+    USER_ROLE.manager,
+  ),
+  ProjectController.getSingleProject,
+);
+
+router.delete(
+  '/delete-project/:id',
+  auth(USER_ROLE.superAdmin),
+  ProjectController.deleteProject,
+);
+
 export const projectRoutes = router;
