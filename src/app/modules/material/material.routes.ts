@@ -22,5 +22,23 @@ router.post(
   validateRequest(MaterialValidations.materialValidationSchema),
   MaterialController.addMaterial,
 );
+router.patch(
+  '/update-material/:id',
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+  ),
+  uploadFile(),
+  (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(MaterialValidations.materialValidationSchema),
+  MaterialController.addMaterial,
+);
 
 export const materialRoutes = router;
