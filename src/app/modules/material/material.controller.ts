@@ -4,10 +4,10 @@ import sendResponse from '../../utilities/sendResponse';
 import MaterialServices from './material.service';
 
 const addMaterial = catchAsync(async (req, res) => {
-  const { files } = req;
-  if (files && typeof files === 'object' && 'material_image' in files) {
-    req.body.image = files['material_image'][0].path;
-  }
+  //   const { files } = req;
+  //   if (files && typeof files === 'object' && 'material_image' in files) {
+  //     req.body.image = files['material_image'][0].path;
+  //   }
   const result = await MaterialServices.createMaterial(req.user.id, req.body);
 
   sendResponse(res, {

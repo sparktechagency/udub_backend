@@ -11,6 +11,9 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
+  if (payload.manufacturer || payload.image || payload.model) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
+  }
   const result = await Material.create({
     ...payload,
     project: payload.project,
@@ -35,7 +38,7 @@ const updateMaterial = async (
     userData.role == USER_ROLE.superAdmin
   ) {
     if (payload.manufacturer || payload.image || payload.model) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'You just update title');
+      throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
     }
   }
   if (userData.role == USER_ROLE.user) {
