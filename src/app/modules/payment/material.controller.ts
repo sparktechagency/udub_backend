@@ -3,7 +3,7 @@ import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import PaymentService from './material.service';
 
-const addMaterial = catchAsync(async (req, res) => {
+const addPayment = catchAsync(async (req, res) => {
   const result = await PaymentService.addPayment(req.user.id, req.body);
 
   sendResponse(res, {
@@ -13,7 +13,9 @@ const addMaterial = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const updateMaterial = catchAsync(async (req, res) => {
+
+// update material
+const updatePayment = catchAsync(async (req, res) => {
   const result = await PaymentService.updatePayment(
     req.user,
     req.params.id,
@@ -28,5 +30,8 @@ const updateMaterial = catchAsync(async (req, res) => {
   });
 });
 
-const PaymentController = { addMaterial, updateMaterial };
+const PaymentController = {
+  addPayment,
+  updatePayment,
+};
 export default PaymentController;

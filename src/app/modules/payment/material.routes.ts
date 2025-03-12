@@ -20,7 +20,7 @@ router.post(
     next();
   },
   validateRequest(PaymentValidations.paymentValidationSchema),
-  PaymentController.addMaterial,
+  PaymentController.addPayment,
 );
 router.patch(
   '/update-payment/:id',
@@ -33,7 +33,7 @@ router.patch(
     next();
   },
   validateRequest(PaymentValidations.updatePaymentValidationSchema),
-  PaymentController.updateMaterial,
+  PaymentController.updatePayment,
 );
 
 export const materialRoutes = router;
