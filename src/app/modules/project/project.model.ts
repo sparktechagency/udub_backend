@@ -23,4 +23,4 @@ const ProjectSchema = new Schema<IProject>(
   { timestamps: true },
 );
 
-export const ProjectModel = model<IProject>('Project', ProjectSchema);
+export const Project = model<IProject>('Project', ProjectSchema);
