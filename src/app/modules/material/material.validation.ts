@@ -1,12 +1,16 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const updateMaterialData = z.object({
-    body: z.object({
-        name: z.string().optional(),
-        phone: z.string().optional(),
-        address: z.string().optional(),
-    }),
+export const materialValidationSchema = z.object({
+  createdBy: z.string().nonempty('CreatedBy is required'),
+  projectOwner: z.string().nonempty('ProjectOwner is required'),
+  project: z.string().nonempty('Project is required'),
+  title: z.string().nonempty('Title is required'),
+  manufacturer: z.string().optional(),
+  model: z.string().optional(),
+  image: z.string().optional(),
 });
 
-const MaterialValidations = { updateMaterialData };
+const MaterialValidations = {
+  materialValidationSchema,
+};
 export default MaterialValidations;

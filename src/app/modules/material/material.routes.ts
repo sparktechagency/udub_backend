@@ -9,8 +9,8 @@ import { uploadFile } from '../../helper/fileUploader';
 const router = express.Router();
 
 router.patch(
-  '/update-profile',
-  auth(USER_ROLE.user),
+  '/create-material',
+  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
   uploadFile(),
   (req, res, next) => {
     if (req.body.data) {
