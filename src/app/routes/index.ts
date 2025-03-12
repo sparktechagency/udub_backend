@@ -6,6 +6,7 @@ import { ManageRoutes } from '../modules/manage-web/manage.routes';
 import { notificationRoutes } from '../modules/notification/notification.routes';
 import { projectRoutes } from '../modules/project/project.routes';
 import { project_imageRoutes } from '../modules/project_image/project_image.routes';
+import { projectDocumentRoutes } from '../modules/project_document/project_document.routes';
 
 const router = Router();
 
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: '/project-image',
     router: project_imageRoutes,
+  },
+  {
+    path: '/project-document',
+    router: projectDocumentRoutes,
   },
 ];
 

@@ -31,5 +31,5 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
   return result;
 };
 
-const Project_imageServices = { uploadDocumentsForProject };
-export default Project_imageServices;
+const ProjectDocumentService = { uploadDocumentsForProject };
+export default ProjectDocumentService;
