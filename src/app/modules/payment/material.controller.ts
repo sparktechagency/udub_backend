@@ -1,28 +1,20 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
-import MaterialServices from './material.service';
+import PaymentService from './material.service';
 
 const addMaterial = catchAsync(async (req, res) => {
-  //   const { files } = req;
-  //   if (files && typeof files === 'object' && 'material_image' in files) {
-  //     req.body.image = files['material_image'][0].path;
-  //   }
-  const result = await MaterialServices.createMaterial(req.user.id, req.body);
+  const result = await PaymentService.addPayment(req.user.id, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Material added successfully',
+    message: 'Payment added successfully',
     data: result,
   });
 });
 const updateMaterial = catchAsync(async (req, res) => {
-  const { files } = req;
-  if (files && typeof files === 'object' && 'material_image' in files) {
-    req.body.image = files['material_image'][0].path;
-  }
-  const result = await MaterialServices.updateMaterial(
+  const result = await PaymentService.updatePayment(
     req.user,
     req.params.id,
     req.body,
@@ -31,10 +23,10 @@ const updateMaterial = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Material updated successfully',
+    message: 'Payment updated successfully',
     data: result,
   });
 });
 
-const MaterialController = { addMaterial, updateMaterial };
-export default MaterialController;
+const PaymentController = { addMaterial, updateMaterial };
+export default PaymentController;

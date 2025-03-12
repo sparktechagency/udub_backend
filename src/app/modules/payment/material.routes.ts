@@ -4,14 +4,14 @@ import { USER_ROLE } from '../user/user.constant';
 import validateRequest from '../../middlewares/validateRequest';
 
 import { uploadFile } from '../../helper/fileUploader';
-import MaterialValidations from './material.validation';
-import MaterialController from './material.controller';
+import PaymentValidations from './material.validation';
+import PaymentController from './material.controller';
 
 const router = express.Router();
 
 router.post(
-  '/add-material',
-  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  '/add-payment',
+  auth(USER_ROLE.superAdmin, USER_ROLE.financeManager),
   uploadFile(),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {
@@ -19,17 +19,12 @@ router.post(
     }
     next();
   },
-  validateRequest(MaterialValidations.materialValidationSchema),
-  MaterialController.addMaterial,
+  validateRequest(PaymentValidations.paymentValidationSchema),
+  PaymentController.addMaterial,
 );
 router.patch(
-  '/update-material/:id',
-  auth(
-    USER_ROLE.manager,
-    USER_ROLE.officeManager,
-    USER_ROLE.superAdmin,
-    USER_ROLE.user,
-  ),
+  '/update-payment/:id',
+  auth(USER_ROLE.financeManager, USER_ROLE.user),
   uploadFile(),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {
@@ -37,8 +32,8 @@ router.patch(
     }
     next();
   },
-  validateRequest(MaterialValidations.updateMaterialValidationSchema),
-  MaterialController.updateMaterial,
+  validateRequest(PaymentValidations.updatePaymentValidationSchema),
+  PaymentController.updateMaterial,
 );
 
 export const materialRoutes = router;

@@ -1,22 +1,22 @@
 import { z } from 'zod';
 
-export const materialValidationSchema = z.object({
-  createdBy: z.string().nonempty('CreatedBy is required'),
+export const paymentValidationSchema = z.object({
   project: z.string().nonempty('Project is required'),
-  title: z.string().nonempty('Title is required'),
-  manufacturer: z.string().optional(),
-  model: z.string().optional(),
-  image: z.string().optional(),
+  amount: z.number({ required_error: 'Amount is required' }),
+  paymentMilestoneName: z.string({
+    required_error: 'Payment milestone name is required',
+  }),
 });
-const updateMaterialValidationSchema = z.object({
-  title: z.string().optional(),
-  manufacturer: z.string().optional(),
-  model: z.string().optional(),
-  image: z.string().optional(),
+const updatePaymentValidationSchema = z.object({
+  amount: z.number({ required_error: 'Amount is required' }),
+  paymentMilestoneName: z.string({
+    required_error: 'Payment milestone name is required',
+  }),
+  status: z.string().optional(),
 });
 
-const MaterialValidations = {
-  materialValidationSchema,
-  updateMaterialValidationSchema,
+const PaymentValidations = {
+  paymentValidationSchema,
+  updatePaymentValidationSchema,
 };
-export default MaterialValidations;
+export default PaymentValidations;
