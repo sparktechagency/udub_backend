@@ -70,10 +70,23 @@ const deleteProject = async (id: string) => {
   return result;
 };
 
+const updateProject = async (id: string, payload: Partial<IProject>) => {
+  const project = await Project.exists({ _id: id });
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+  const result = await Project.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
 const ProjectServices = {
   createProject,
   getAllProject,
   getSingleProject,
   deleteProject,
+  updateProject,
 };
 export default ProjectServices;
