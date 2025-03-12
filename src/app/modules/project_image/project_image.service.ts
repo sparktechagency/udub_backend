@@ -1,21 +1,35 @@
-import httpStatus from "http-status";
-import AppError from "../../error/appError";
-import { IProject_image } from "./project_image.interface";
-import project_imageModel from "./project_image.model";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import httpStatus from 'http-status';
+import AppError from '../../error/appError';
+import { ProjectImage } from './project_image.model';
+import { Project } from '../project/project.model';
 
-const updateUserProfile = async (id: string, payload: Partial<IProject_image>) => {
-    if (payload.email || payload.username) {
-        throw new AppError(httpStatus.BAD_REQUEST, "You cannot change the email or username");
-    }
-    const user = await project_imageModel.findById(id);
-    if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "Profile not found");
-    }
-    return await project_imageModel.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
+const uploadImageForProject = async (userId: string, payload: any) => {
+  const project = await Project.exists({ _id: payload.projectId });
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+
+  const imageData = payload.imageData;
+
+  if (!imageData || imageData.length !== payload.images.length) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Each image must have a corresponding title, description, and projectId',
+    );
+  }
+
+  const imagesData = payload.images.map((image: string, index: number) => ({
+    addedBy: userId,
+    projectId: imageData[index].projectId,
+    title: imageData[index].title || '',
+    description: imageData[index].description || '',
+    image_url: image,
+  }));
+
+  const result = await ProjectImage.insertMany(imagesData);
+  return result;
 };
 
-const Project_imageServices = { updateUserProfile };
+const Project_imageServices = { uploadImageForProject };
 export default Project_imageServices;
