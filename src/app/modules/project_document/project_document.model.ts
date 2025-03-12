@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { IProjectDocument } from './project_document.interface';
 
-const ProjectImageSchema = new Schema<IProjectDocument>(
+const ProjectDocumentSchema = new Schema<IProjectDocument>(
   {
     addedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
@@ -12,7 +12,7 @@ const ProjectImageSchema = new Schema<IProjectDocument>(
   { timestamps: true },
 );
 
-export const ProjectImage = model<IProjectDocument>(
-  'ProjectImage',
-  ProjectImageSchema,
+export const ProjectDocument = model<IProjectDocument>(
+  'ProjectDocument',
+  ProjectDocumentSchema,
 );
