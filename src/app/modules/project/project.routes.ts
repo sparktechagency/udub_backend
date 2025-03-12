@@ -53,4 +53,10 @@ router.delete(
   ProjectController.deleteProject,
 );
 
+router.patch(
+  '/update-project/:id',
+  auth(USER_ROLE.superAdmin),
+  ProjectController.updateProject,
+);
+
 export const projectRoutes = router;
