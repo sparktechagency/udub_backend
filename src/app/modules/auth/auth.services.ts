@@ -341,6 +341,7 @@ const resendVerifyCode = async (email: string) => {
       codeExpireIn: new Date(Date.now() + 5 * 60000),
     },
   );
+  //
   sendEmail({
     email: user.email,
     subject: 'Reset password code',
