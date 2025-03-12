@@ -2,15 +2,16 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 import validateRequest from '../../middlewares/validateRequest';
-import projectValidations from './project.validation';
-import projectController from './project.controller';
+
 import { uploadFile } from '../../helper/fileUploader';
+import ProjectValidations from './project.validation';
+import ProjectController from './project.controller';
 
 const router = express.Router();
 
 router.patch(
-  '/update-profile',
-  auth(USER_ROLE.user),
+  '/create-project',
+  auth(USER_ROLE.superAdmin),
   uploadFile(),
   (req, res, next) => {
     if (req.body.data) {
@@ -18,8 +19,8 @@ router.patch(
     }
     next();
   },
-  validateRequest(projectValidations.updateProjectData),
-  projectController.updateUserProfile,
+  validateRequest(ProjectValidations.createProjectValidationSchema),
+  ProjectController.createProject,
 );
 
 export const projectRoutes = router;
