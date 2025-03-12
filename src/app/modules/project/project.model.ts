@@ -1,16 +1,26 @@
-import { model, Schema } from "mongoose";
-import { IProject } from "./project.interface";
+import { model, Schema } from 'mongoose';
+import { IProject } from './project.interface';
 
-const projectSchema = new Schema<IProject>({
-    user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+const ProjectSchema = new Schema<IProject>(
+  {
     name: { type: String, required: true },
-    phone: { type: String },
-    email: { type: String, required: true, unique: true },
-    address: { type: String },
-    profile_image: { type: String, default: "" },
-    totalAmount: { type: Number, default: 0 },
-    totalPoint: { type: Number, default: 0 }
-}, { timestamps: true });
+    projectOwnerEmail: { type: String, required: true },
+    title: { type: String, required: true },
+    startDate: { type: Date, required: true },
+    liveLink: { type: String, required: false },
+    projectManager: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    officeManager: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    financeManager: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  { timestamps: true },
+);
 
-const projectModel = model<IProject>("Project", projectSchema);
-export default projectModel;
+export const ProjectModel = model<IProject>('Project', ProjectSchema);
