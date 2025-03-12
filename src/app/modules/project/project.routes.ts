@@ -23,4 +23,16 @@ router.patch(
   ProjectController.createProject,
 );
 
+router.get(
+  '/get-all-project',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+    USER_ROLE.manager,
+  ),
+  ProjectController.getAllProject,
+);
+
 export const projectRoutes = router;

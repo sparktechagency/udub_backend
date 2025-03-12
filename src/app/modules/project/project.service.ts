@@ -3,6 +3,7 @@ import AppError from '../../error/appError';
 import { IProject } from './project.interface';
 import { User } from '../user/user.model';
 import { Project } from './project.model';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createProject = async (payload: IProject) => {
   const managers = await User.find({
@@ -33,5 +34,23 @@ const createProject = async (payload: IProject) => {
   return result;
 };
 
-const ProjectServices = { createProject };
+// get all project
+
+const getAllProject = async (query: Record<string, unknown>) => {
+  const projectQuery = new QueryBuilder(Project.find(), query)
+    .search(['name', 'title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await projectQuery.modelQuery;
+  const meta = await projectQuery.countTotal();
+  return {
+    result,
+    meta,
+  };
+};
+
+const ProjectServices = { createProject, getAllProject };
 export default ProjectServices;
