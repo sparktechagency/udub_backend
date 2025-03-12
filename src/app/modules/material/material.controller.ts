@@ -3,7 +3,7 @@ import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import MaterialServices from './material.service';
 
-const updateUserProfile = catchAsync(async (req, res) => {
+const addMaterial = catchAsync(async (req, res) => {
   const { files } = req;
   if (files && typeof files === 'object' && 'material_image' in files) {
     req.body.profile_image = files['material_image'][0].path;
@@ -18,5 +18,5 @@ const updateUserProfile = catchAsync(async (req, res) => {
   });
 });
 
-const MaterialController = { updateUserProfile };
+const MaterialController = { addMaterial };
 export default MaterialController;

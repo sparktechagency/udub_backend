@@ -7,6 +7,7 @@ import { notificationRoutes } from '../modules/notification/notification.routes'
 import { projectRoutes } from '../modules/project/project.routes';
 import { project_imageRoutes } from '../modules/project_image/project_image.routes';
 import { projectDocumentRoutes } from '../modules/project_document/project_document.routes';
+import { materialRoutes } from '../modules/material/material.routes';
 
 const router = Router();
 
@@ -38,6 +39,10 @@ const moduleRoutes = [
   {
     path: '/project-document',
     router: projectDocumentRoutes,
+  },
+  {
+    path: '/material',
+    router: materialRoutes,
   },
 ];
 
