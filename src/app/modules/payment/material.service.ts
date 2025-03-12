@@ -14,15 +14,6 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
   if (payload.manufacturer || payload.image || payload.model) {
     throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
   }
-  if (
-    project.projectManager.toString() != userId &&
-    !project.officeManager.toString()
-  ) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "You are not asssigned this project , so you can't able to add a material",
-    );
-  }
   const result = await Material.create({
     ...payload,
     project: payload.project,
@@ -48,19 +39,6 @@ const updateMaterial = async (
   ) {
     if (payload.manufacturer || payload.image || payload.model) {
       throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
-    }
-    const project = await Project.findById(material.project);
-    if (!project) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
-    }
-    if (
-      project.projectManager.toString() != userData.userId &&
-      project.officeManager.toString() != userData.userId
-    ) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        "You are not asssigned this project , so you can't able to update this material",
-      );
     }
   }
   if (userData.role == USER_ROLE.user) {
