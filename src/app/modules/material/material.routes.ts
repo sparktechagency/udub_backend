@@ -37,8 +37,8 @@ router.patch(
     }
     next();
   },
-  validateRequest(MaterialValidations.materialValidationSchema),
-  MaterialController.addMaterial,
+  validateRequest(MaterialValidations.updateMaterialValidationSchema),
+  MaterialController.updateMaterial,
 );
 
 export const materialRoutes = router;
