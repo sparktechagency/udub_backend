@@ -4,6 +4,7 @@ import { authRoutes } from '../modules/auth/auth.routes';
 import { ManageRoutes } from '../modules/manage-web/manage.routes';
 
 import { notificationRoutes } from '../modules/notification/notification.routes';
+import { projectRoutes } from '../modules/project/project.routes';
 
 const router = Router();
 
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: '/notification',
     router: notificationRoutes,
+  },
+  {
+    path: '/project',
+    router: projectRoutes,
   },
 ];
 
