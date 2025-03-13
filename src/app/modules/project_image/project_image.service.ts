@@ -3,6 +3,8 @@ import httpStatus from 'http-status';
 import AppError from '../../error/appError';
 import { ProjectImage } from './project_image.model';
 import { Project } from '../project/project.model';
+import { IProject_image } from './project_image.interface';
+import unlinkFile from '../../helper/unLinkFile';
 
 const uploadImageForProject = async (userId: string, payload: any) => {
   const project = await Project.exists({ _id: payload.projectId });
@@ -31,5 +33,25 @@ const uploadImageForProject = async (userId: string, payload: any) => {
   return result;
 };
 
-const Project_imageServices = { uploadImageForProject };
+const updateImage = async (
+  updateBy: string,
+  id: string,
+  payload: Partial<IProject_image>,
+) => {
+  const image = await ProjectImage.findOne({ _id: id });
+  if (!image) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Image not found');
+  }
+  const result = await ProjectImage.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  // TOOD: need to be change in store image another way
+  if (payload.image_url) {
+    unlinkFile(image.image_url);
+  }
+  return result;
+};
+
+const Project_imageServices = { uploadImageForProject, updateImage };
 export default Project_imageServices;

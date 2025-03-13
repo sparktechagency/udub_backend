@@ -8,9 +8,9 @@ import Project_imageController from './project_image.controller';
 
 const router = express.Router();
 
-router.patch(
+router.post(
   '/upload-project-image',
-  auth(USER_ROLE.user),
+  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
   uploadFile(),
   (req, res, next) => {
     if (req.body.data) {
@@ -20,6 +20,18 @@ router.patch(
   },
   validateRequest(ProjectImageValidations.projectImageValidationSchema),
   Project_imageController.uploadImagesForProject,
+);
+router.patch(
+  '/update-project-image',
+  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  uploadFile(),
+  (req, res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  Project_imageController.updateImage,
 );
 
 export const project_imageRoutes = router;

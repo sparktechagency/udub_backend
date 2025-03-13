@@ -19,6 +19,23 @@ const uploadImagesForProject = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const updateImage = catchAsync(async (req, res) => {
+  const { files } = req;
+  if (files && typeof files === 'object' && 'image' in files) {
+    req.body.image_url = files['image'][0].path;
+  }
+  const result = await project_imageServices.updateImage(
+    req.user.id,
+    req.params.id,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Images updated successfully',
+    data: result,
+  });
+});
 
-const Project_imageController = { uploadImagesForProject };
+const Project_imageController = { uploadImagesForProject, updateImage };
 export default Project_imageController;
