@@ -12,18 +12,21 @@ cloudinary.config({
 export const sendImageToCloudinary = (
   imageName: string,
   path: string,
+  folder: string = 'default_folder', // Default folder if not provided
 ): Promise<Record<string, unknown>> => {
-  //--------------------------
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       path,
-      { public_id: imageName },
+      {
+        public_id: imageName,
+        folder: folder, // Specify the folder here
+      },
       function (error, result) {
         if (error) {
           reject(error);
         }
         resolve(result as UploadApiResponse);
-        // delete a file asynchronously--------
+        // Delete the file after upload
         fs.unlink(path, (err) => {
           if (err) {
             reject(err);
@@ -35,7 +38,6 @@ export const sendImageToCloudinary = (
     );
   });
 };
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, process.cwd() + '/uploads');

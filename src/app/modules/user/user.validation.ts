@@ -11,16 +11,17 @@ const userValidationSchema = z.object({
 });
 
 const userUpdateValidationSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
-  email: z.string({ required_error: 'Email is required' }),
-  phone: z
-    .string({
-      invalid_type_error: 'Phone number must be string',
-    })
-    .optional(),
-  address: z
-    .string({ invalid_type_error: 'Address must be string' })
-    .optional(),
+  body: z.object({
+    name: z.string().optional(),
+    phone: z
+      .string({
+        invalid_type_error: 'Phone number must be string',
+      })
+      .optional(),
+    address: z
+      .string({ invalid_type_error: 'Address must be string' })
+      .optional(),
+  }),
 });
 
 const loginValidationSchema = z.object({

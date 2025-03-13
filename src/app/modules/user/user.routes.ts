@@ -19,11 +19,12 @@ router.patch(
   auth(
     USER_ROLE.user,
     USER_ROLE.manager,
-    USER_ROLE.finance,
+    USER_ROLE.financeManager,
     USER_ROLE.officeManager,
     USER_ROLE.superAdmin,
   ),
   uploadFile(),
+  // upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {
       req.body = JSON.parse(req.body.data);
@@ -39,7 +40,7 @@ router.get(
   auth(
     USER_ROLE.user,
     USER_ROLE.manager,
-    USER_ROLE.finance,
+    USER_ROLE.financeManager,
     USER_ROLE.officeManager,
     USER_ROLE.superAdmin,
   ),

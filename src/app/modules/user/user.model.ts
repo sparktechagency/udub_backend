@@ -17,6 +17,9 @@ const userSchema = new Schema<TUser>(
     address: {
       type: String,
     },
+    profile_image: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,

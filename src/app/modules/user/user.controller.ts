@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import userServices from './user.services';
+import { sendImageToCloudinary } from '../../utilities/sendImageToCloudinary';
 
 const registerUser = catchAsync(async (req, res) => {
   const result = await userServices.registerUser(req.body);
@@ -15,9 +16,17 @@ const registerUser = catchAsync(async (req, res) => {
 
 const updateUserProfile = catchAsync(async (req, res) => {
   const { files } = req;
+  let profile_image_path;
   if (files && typeof files === 'object' && 'profile_image' in files) {
-    req.body.profile_image = files['profile_image'][0].path;
+    profile_image_path = files['profile_image'][0].path;
   }
+  const imageName = req.user.id;
+  const { secure_url } = await sendImageToCloudinary(
+    imageName,
+    profile_image_path as string,
+    'profile_image',
+  );
+  req.body.profile_image = secure_url as string;
 
   const result = await userServices.updateUserProfile(req.user.id, req.body);
   sendResponse(res, {
