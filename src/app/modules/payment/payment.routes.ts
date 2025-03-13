@@ -4,8 +4,8 @@ import { USER_ROLE } from '../user/user.constant';
 import validateRequest from '../../middlewares/validateRequest';
 
 import { uploadFile } from '../../helper/fileUploader';
-import PaymentValidations from './material.validation';
-import PaymentController from './material.controller';
+import PaymentValidations from './payment.validation';
+import PaymentController from './payment.controller';
 
 const router = express.Router();
 
@@ -36,4 +36,4 @@ router.patch(
   PaymentController.updatePayment,
 );
 
-export const materialRoutes = router;
+export const paymentRoutes = router;
