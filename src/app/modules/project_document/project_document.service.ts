@@ -3,6 +3,8 @@ import httpStatus from 'http-status';
 import AppError from '../../error/appError';
 import { Project } from '../project/project.model';
 import { ProjectDocument } from './project_document.model';
+import { IProjectDocument } from './project_document.interface';
+import unlinkFile from '../../helper/unLinkFile';
 
 const uploadDocumentsForProject = async (userId: string, payload: any) => {
   const project = await Project.exists({ _id: payload.projectId });
@@ -31,5 +33,25 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
   return result;
 };
 
-const ProjectDocumentService = { uploadDocumentsForProject };
+const updateDocument = async (
+  updateBy: string,
+  id: string,
+  payload: Partial<IProjectDocument>,
+) => {
+  const document = await ProjectDocument.findOne({ _id: id });
+  if (!document) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Document not found');
+  }
+  const result = await ProjectDocument.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  // TOOD: need to be change in store image another way
+  if (payload.document_url) {
+    unlinkFile(document.document_url);
+  }
+  return result;
+};
+
+const ProjectDocumentService = { uploadDocumentsForProject, updateDocument };
 export default ProjectDocumentService;
