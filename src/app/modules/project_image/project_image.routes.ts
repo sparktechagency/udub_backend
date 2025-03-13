@@ -22,7 +22,7 @@ router.post(
   Project_imageController.uploadImagesForProject,
 );
 router.patch(
-  '/update-project-image',
+  '/update-project-image/:id',
   auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
   uploadFile(),
   (req, res, next) => {

@@ -20,5 +20,23 @@ const uploadImagesForProject = catchAsync(async (req, res) => {
   });
 });
 
-const ProjectDocumentController = { uploadImagesForProject };
+const updateDocument = catchAsync(async (req, res) => {
+  const { files } = req;
+  if (files && typeof files === 'object' && 'document' in files) {
+    req.body.document_url = files['document'][0].path;
+  }
+  const result = await ProjectDocumentService.updateDocument(
+    req.user.id,
+    req.params.id,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Document updated successfully',
+    data: result,
+  });
+});
+
+const ProjectDocumentController = { uploadImagesForProject, updateDocument };
 export default ProjectDocumentController;
