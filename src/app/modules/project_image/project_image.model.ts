@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { IProject_image } from './project_image.interface';
-
+//
 const ProjectImageSchema = new Schema<IProject_image>(
   {
     addedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
