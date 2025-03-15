@@ -12,6 +12,8 @@ export const uploadFile = () => {
         uploadPath = 'uploads/images/profile';
       } else if (file.fieldname === 'category_image') {
         uploadPath = 'uploads/images/category';
+      } else if (file.fieldname === 'project_images') {
+        uploadPath = 'uploads/images/project_images';
       } else if (file.fieldname === 'league_image') {
         uploadPath = 'uploads/images/league_image';
       } else if (file.fieldname === 'team_logo') {
@@ -63,6 +65,7 @@ export const uploadFile = () => {
       'player_bg_image',
       'reward_image',
       'video',
+      'project_images',
     ];
 
     if (file.fieldname === undefined) {
@@ -100,6 +103,7 @@ export const uploadFile = () => {
     { name: 'player_bg_image', maxCount: 1 },
     { name: 'reward_image', maxCount: 1 },
     { name: 'video', maxCount: 1 },
+    { name: 'project_images', maxCount: 5 },
   ]);
 
   return upload;

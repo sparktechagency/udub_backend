@@ -18,7 +18,7 @@ router.post(
     }
     next();
   },
-  validateRequest(ProjectImageValidations.projectImageValidationSchema),
+  // validateRequest(ProjectImageValidations.projectImageValidationSchema),
   Project_imageController.uploadImagesForProject,
 );
 router.patch(
