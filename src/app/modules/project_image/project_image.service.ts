@@ -7,11 +7,10 @@ import { IProject_image } from './project_image.interface';
 import unlinkFile from '../../helper/unLinkFile';
 
 const uploadImageForProject = async (userId: string, payload: any) => {
-  // const project = await Project.exists({ _id: payload.projectId });
-  // if (!project) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
-  // }
-  console.log(payload);
+  const project = await Project.exists({ _id: payload.projectId });
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
 
   const imageData = payload.imageData;
 
