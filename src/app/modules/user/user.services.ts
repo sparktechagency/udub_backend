@@ -4,7 +4,6 @@ import { User } from './user.model';
 import AppError from '../../error/appError';
 import httpStatus from 'http-status';
 import { TUser } from './user.interface';
-import { USER_ROLE } from './user.constant';
 import { JwtPayload } from 'jsonwebtoken';
 
 const registerUser = async (payload: TUser) => {
@@ -29,10 +28,7 @@ const updateUserProfile = async (id: string, payload: Partial<TUser>) => {
 };
 
 const getMyProfile = async (userData: JwtPayload) => {
-  let result = null;
-  if (userData.role === USER_ROLE.user) {
-    result = await User.findOne({ email: userData.email });
-  }
+  const result = await User.findOne({ email: userData.email });
   return result;
 };
 

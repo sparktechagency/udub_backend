@@ -6,6 +6,7 @@ import server from './app';
 import { errorLogger, logger } from './app/shared/logger';
 import config from './app/config';
 import seedSuperAdmin from './app/DB';
+import { initializeSocket } from './app/socket/socketManager';
 
 let myServer: HTTPServer | undefined;
 
@@ -26,6 +27,8 @@ async function main() {
     //   logger.info(`Server running on http://0.0.0.0:${port}`);
     //   seedSuperAdmin();
     // });
+
+    initializeSocket(myServer);
 
     // Global unhandled rejection handler
     process.on('unhandledRejection', (error) => {

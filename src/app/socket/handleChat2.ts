@@ -23,7 +23,7 @@ const handleChat2 = async (
       text: data.text,
       imageUrl: data.imageUrl || [],
       videoUrl: data.videoUrl || [],
-      msgByUserId: data?.msgByUserId,
+      msgByUserId: data?.sender,
       conversationId: conversation?._id,
     };
     // console.log('message dta', messageData);
