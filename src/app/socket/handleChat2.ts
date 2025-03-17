@@ -1,57 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server as IOServer, Socket } from 'socket.io';
-import NormalUser from '../modules/normalUser/normalUser.model';
 import Conversation from '../modules/conversation/conversation.model';
 import Message from '../modules/message/message.model';
-import { getSingleConversation2 } from '../helper/getSingleConversation2';
+import { getSingleConversation } from '../helper/getSingleConversation';
 
 const handleChat2 = async (
   io: IOServer,
   socket: Socket,
-  onlineUser: any,
   currentUserId: string,
 ): Promise<void> => {
-  // message page
-  socket.on('message-page', async (userId) => {
-    const userDetails = await NormalUser.findById(userId).select('-password');
-    if (userDetails) {
-      const payload = {
-        _id: userDetails._id,
-        name: userDetails.name,
-        email: userDetails.email,
-        profile_image: userDetails?.profile_image,
-        online: onlineUser.has(userId),
-      };
-      socket.emit('message-user', payload);
-    } else {
-      socket.emit('socket-error', {
-        errorMessage: 'Current user is not exits',
-      });
-    }
-    //get previous message
-    const conversation = await Conversation.findOne({
-      $or: [
-        { sender: currentUserId, receiver: userId },
-        { sender: userId, receiver: currentUserId },
-      ],
-    });
-    const messages = await Message.find({ conversationId: conversation?._id });
-
-    socket.emit('messages', messages || []);
-  });
-
   // new message -----------------------------------
   socket.on('new-message', async (data) => {
     let conversation = await Conversation.findOne({
-      $or: [
-        { sender: data?.sender, receiver: data?.receiver },
-        { sender: data?.receiver, receiver: data?.sender },
-      ],
+      $and: [{ participants: data.sender }, { participants: data.receiver }],
     });
     if (!conversation) {
       conversation = await Conversation.create({
-        sender: data?.sender,
-        receiver: data?.receiver,
+        participants: [data.sender, data.receiver],
       });
     }
     const messageData = {
@@ -80,11 +45,11 @@ const handleChat2 = async (
     );
 
     //send conversation
-    const conversationSender = await getSingleConversation2(
+    const conversationSender = await getSingleConversation(
       data?.sender,
       data?.receiver,
     );
-    const conversationReceiver = await getSingleConversation2(
+    const conversationReceiver = await getSingleConversation(
       data?.receiver,
       data?.sender,
     );
@@ -100,11 +65,11 @@ const handleChat2 = async (
     );
 
     //send conversation --------------
-    const conversationSender = await getSingleConversation2(
+    const conversationSender = await getSingleConversation(
       currentUserId,
       msgByUserId,
     );
-    const conversationReceiver = await getSingleConversation2(
+    const conversationReceiver = await getSingleConversation(
       msgByUserId,
       currentUserId,
     );
