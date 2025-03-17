@@ -43,7 +43,6 @@ const getConversation = async (
     .sort();
 
   const currentUserConversation = await currentUserConversationQuery.modelQuery;
-
   const conversationList = await Promise.all(
     currentUserConversation.map(async (conv: any) => {
       const countUnseenMessage = await Message.countDocuments({

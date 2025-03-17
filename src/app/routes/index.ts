@@ -8,6 +8,8 @@ import { projectRoutes } from '../modules/project/project.routes';
 import { project_imageRoutes } from '../modules/project_image/project_image.routes';
 import { projectDocumentRoutes } from '../modules/project_document/project_document.routes';
 import { materialRoutes } from '../modules/material/material.routes';
+import { conversationRoutes } from '../modules/conversation/conversation.routes';
+import { messageRoutes } from '../modules/message/message.routes';
 
 const router = Router();
 
@@ -43,6 +45,14 @@ const moduleRoutes = [
   {
     path: '/material',
     router: materialRoutes,
+  },
+  {
+    path: '/conversation',
+    router: conversationRoutes,
+  },
+  {
+    path: '/message',
+    router: messageRoutes,
   },
 ];
 
