@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import QueryBuilder from '../../builder/QueryBuilder';
 import Message from '../message/message.model';
-import NormalUser from '../normalUser/normalUser.model';
+import { User } from '../user/user.model';
 import Conversation from './conversation.model';
 
 const getConversation = async (
@@ -12,39 +12,28 @@ const getConversation = async (
   let userSearchFilter = {};
 
   if (searchTerm) {
-    const matchingUsers = await NormalUser.find(
+    const matchingUsers = await User.find(
       { name: { $regex: searchTerm, $options: 'i' } },
       '_id',
     );
 
     const matchingUserIds = matchingUsers.map((user) => user._id);
-    userSearchFilter = {
-      $or: [
-        {
-          $and: [
-            { sender: { $in: matchingUserIds } },
-            { sender: { $ne: profileId } },
-          ],
-        },
 
-        {
-          $and: [
-            { receiver: { $in: matchingUserIds } },
-            { receiver: { $ne: profileId } },
-          ],
-        },
-      ],
+    userSearchFilter = {
+      participants: { $in: matchingUserIds },
     };
   }
 
   const currentUserConversationQuery = new QueryBuilder(
     Conversation.find({
-      $or: [{ sender: profileId }, { receiver: profileId }],
+      participants: profileId,
       ...userSearchFilter,
     })
       .sort({ updatedAt: -1 })
-      .populate({ path: 'sender', select: 'name profile_image _id email' })
-      .populate({ path: 'receiver', select: 'name profile_image _id email' })
+      .populate({
+        path: 'participants',
+        select: 'name profile_image _id email',
+      })
       .populate('lastMessage'),
     query,
   )
@@ -62,8 +51,10 @@ const getConversation = async (
         msgByUserId: { $ne: profileId },
         seen: false,
       });
-      const otherUser =
-        conv.sender._id.toString() == profileId ? conv.receiver : conv.sender;
+      const otherUser = conv.participants.find(
+        (userId: any) => userId.toString() !== profileId,
+      );
+
       return {
         _id: conv?._id,
         userData: {
