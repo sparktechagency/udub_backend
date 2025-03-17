@@ -4,6 +4,7 @@ import { USER_ROLE } from './user.constant';
 
 export interface TUser {
   _id: string;
+  name: string;
   email: string;
   phone: string;
   profile_image: string;

@@ -6,6 +6,10 @@ import { USER_ROLE } from './user.constant';
 
 const userSchema = new Schema<TUser>(
   {
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
