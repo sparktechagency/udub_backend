@@ -1,7 +1,7 @@
 import Conversation from '../conversation/conversation.model';
 import Message from './message.model';
 import QueryBuilder from '../../builder/QueryBuilder';
-import NormalUser from '../normalUser/normalUser.model';
+import { User } from '../user/user.model';
 
 const getMessages = async (
   profileId: string,
@@ -33,7 +33,7 @@ const getMessages = async (
       .sort();
     const result = await messageQuery.modelQuery;
     const meta = await messageQuery.countTotal();
-    const userData = await NormalUser.findById(userId)
+    const userData = await User.findById(userId)
       .select('name profile_image')
       .populate({ path: 'mainSkill', select: 'name' });
     return {
@@ -45,7 +45,7 @@ const getMessages = async (
       },
     };
   }
-  const userData = await NormalUser.findById(userId)
+  const userData = await User.findById(userId)
     .select('name profile_image')
     .populate({ path: 'mainSkill', select: 'name' });
 
