@@ -16,9 +16,6 @@ const initializeSocket = (server: HTTPServer) => {
         origin: '*',
       },
     });
-    // online user
-
-    console.log(onlineUser);
     // io.on('ping', (data) => {
     //   io.emit('pong', data);
     // });

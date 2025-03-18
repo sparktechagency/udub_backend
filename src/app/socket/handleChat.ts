@@ -26,7 +26,6 @@ const handleChat2 = async (
       msgByUserId: data?.sender,
       conversationId: conversation?._id,
     };
-    // console.log('message dta', messageData);
     const saveMessage = await Message.create(messageData);
     await Conversation.updateOne(
       { _id: conversation?._id },
@@ -63,7 +62,6 @@ const handleChat2 = async (
       { conversationId: conversationId, msgByUserId: msgByUserId },
       { $set: { seen: true } },
     );
-
     //send conversation --------------
     const conversationSender = await getSingleConversation(
       currentUserId,
