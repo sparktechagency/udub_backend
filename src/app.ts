@@ -11,8 +11,6 @@ import router from './app/routes';
 import notFound from './app/middlewares/notFound';
 const app: Application = express();
 import multer from 'multer';
-import auth from './app/middlewares/auth';
-import { USER_ROLE } from './app/modules/user/user.constant';
 import sendContactUsEmail from './app/helper/sendContactUsEmail';
 import getSheet from './getSheet';
 import getSpecificSheet from './getSpecificSheet';
