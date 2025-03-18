@@ -9,17 +9,8 @@ const getMessages = async (
   query: Record<string, unknown>,
 ) => {
   const conversation = await Conversation.findOne({
-    $or: [
-      { sender: profileId, receiver: userId },
-      { sender: userId, receiver: profileId },
-    ],
+    $and: [{ participants: profileId }, { participants: userId }],
   });
-  // if (!conversation) {
-  //   conversation = await Conversation.create({
-  //     sender: profileId,
-  //     receiver: userId,
-  //   });
-  // }
 
   if (conversation) {
     const messageQuery = new QueryBuilder(
@@ -33,9 +24,7 @@ const getMessages = async (
       .sort();
     const result = await messageQuery.modelQuery;
     const meta = await messageQuery.countTotal();
-    const userData = await User.findById(userId)
-      .select('name profile_image')
-      .populate({ path: 'mainSkill', select: 'name' });
+    const userData = await User.findById(userId).select('name profile_image');
     return {
       meta,
       result: {
@@ -45,9 +34,7 @@ const getMessages = async (
       },
     };
   }
-  const userData = await User.findById(userId)
-    .select('name profile_image')
-    .populate({ path: 'mainSkill', select: 'name' });
+  const userData = await User.findById(userId).select('name profile_image');
 
   return {
     result: {

@@ -4,7 +4,7 @@ import MessageService from './message.service';
 
 const getMessages = catchAsync(async (req, res) => {
   const result = await MessageService.getMessages(
-    req?.user?.profileId,
+    req?.user?.id,
     req.params.userId,
     req.query,
   );
