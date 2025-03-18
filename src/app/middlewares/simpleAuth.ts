@@ -86,9 +86,9 @@ const simpleAuth = async (req: Request, res: Response, next: NextFunction) => {
       req.user = decoded;
     }
 
-    next(); // Proceed to the next middleware
+    next();
   } catch (error) {
-    next(); // Ignore errors and proceed
+    next();
   }
 };
 
