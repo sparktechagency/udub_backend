@@ -4,8 +4,10 @@ import { Server as IOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import handleChat from './handleChat';
 import { User } from '../modules/user/user.model';
+import AppError from '../error/appError';
+import httpStatus from 'http-status';
 let io: IOServer;
-
+export const onlineUser = new Set();
 const initializeSocket = (server: HTTPServer) => {
   if (!io) {
     io = new IOServer(server, {
@@ -15,7 +17,7 @@ const initializeSocket = (server: HTTPServer) => {
       },
     });
     // online user
-    const onlineUser = new Set();
+
     console.log(onlineUser);
     // io.on('ping', (data) => {
     //   io.emit('pong', data);
@@ -36,12 +38,15 @@ const initializeSocket = (server: HTTPServer) => {
       // set online user
       onlineUser.add(currentUserId);
       // send to the client
+      io.emit('onlineUser', Array.from(onlineUser));
 
       // handle chat -------------------
       await handleChat(io, socket, currentUserId);
-      io.emit('onlineUser', Array.from(onlineUser));
+
       socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
+        onlineUser.delete(currentUserId);
+        io.emit('onlineUser', Array.from(onlineUser));
       });
     });
   }
@@ -50,7 +55,8 @@ const initializeSocket = (server: HTTPServer) => {
 
 const getIO = () => {
   if (!io) {
-    throw new Error(
+    throw new AppError(
+      httpStatus.CONFLICT,
       'Socket.io is not initialized. Call initializeSocket first.',
     );
   }

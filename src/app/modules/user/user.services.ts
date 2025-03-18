@@ -33,7 +33,7 @@ const getMyProfile = async (userData: JwtPayload) => {
 };
 
 const deleteUserAccount = async (user: JwtPayload, password: string) => {
-  const userData = await User.findById(user.id).select('-password');
+  const userData = await User.findById(user.id);
 
   if (!userData) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
