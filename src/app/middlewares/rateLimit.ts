@@ -16,7 +16,6 @@ const rateLimit = async (req: Request, res: Response, next: NextFunction) => {
   if (requests === 1) {
     await redis.expire(ip as RedisKey, windowTime);
   }
-
   // If limit exceeded, return error
   if (requests > limit) {
     return res
