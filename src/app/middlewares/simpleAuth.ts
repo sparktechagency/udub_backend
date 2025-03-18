@@ -64,23 +64,21 @@ const simpleAuth = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
     if (!token) {
-      return next(); // Continue if no token is provided
+      return next();
     }
 
     let decoded: JwtPayload | null = null;
 
     try {
-      // Verify token to check validity
       decoded = jwt.verify(
         token,
         config.jwt_access_secret as string,
       ) as JwtPayload;
     } catch (err: any) {
-      // If token expired, decode without verifying
       if (err.name === 'TokenExpiredError') {
         decoded = jwt.decode(token) as JwtPayload | null;
       } else {
-        return next(); // Ignore other errors
+        return next();
       }
     }
 
@@ -90,7 +88,6 @@ const simpleAuth = async (req: Request, res: Response, next: NextFunction) => {
 
     next(); // Proceed to the next middleware
   } catch (error) {
-    console.log(error);
     next(); // Ignore errors and proceed
   }
 };
