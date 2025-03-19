@@ -4,7 +4,7 @@ import Conversation from '../modules/conversation/conversation.model';
 import Message from '../modules/message/message.model';
 import { getSingleConversation } from '../helper/getSingleConversation';
 
-const handleChat2 = async (
+const handleChat = async (
   io: IOServer,
   socket: Socket,
   currentUserId: string,
@@ -77,4 +77,4 @@ const handleChat2 = async (
   });
 };
 
-export default handleChat2;
+export default handleChat;
