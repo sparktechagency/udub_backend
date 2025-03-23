@@ -21,7 +21,7 @@ router.patch(
   validateRequest(ProjectValidations.createProjectValidationSchema),
   ProjectController.createProject,
 );
-
+// get all project
 router.get(
   '/get-all-project',
   auth(
