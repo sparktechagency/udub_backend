@@ -41,4 +41,14 @@ router.patch(
   MaterialController.updateMaterial,
 );
 
+router.get(
+  '/get-materials',
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+  ),
+);
+
 export const materialRoutes = router;

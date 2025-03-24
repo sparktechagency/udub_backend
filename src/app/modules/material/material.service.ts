@@ -5,6 +5,7 @@ import { IMaterial } from './material.interface';
 import { Material } from './material.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const createMaterial = async (userId: string, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project });
@@ -78,5 +79,21 @@ const updateMaterial = async (
   return result;
 };
 
-const MaterialServices = { createMaterial, updateMaterial };
+const getAllMatetial = async (query: Record<string, unknown>) => {
+  const resultQuery = new QueryBuilder(Material.find(), query)
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const meta = await resultQuery.countTotal();
+  const result = await resultQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
+};
+
+const MaterialServices = { createMaterial, updateMaterial, getAllMatetial };
 export default MaterialServices;
