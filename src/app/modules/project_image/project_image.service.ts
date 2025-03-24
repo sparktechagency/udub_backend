@@ -58,5 +58,9 @@ const getProjectImages = async (id: string) => {
   return result;
 };
 
-const Project_imageServices = { uploadImageForProject, updateImage };
+const Project_imageServices = {
+  uploadImageForProject,
+  updateImage,
+  getProjectImages,
+};
 export default Project_imageServices;

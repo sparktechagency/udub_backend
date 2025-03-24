@@ -34,4 +34,15 @@ router.patch(
   Project_imageController.updateImage,
 );
 
+router.get(
+  '/get-project-images/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.financeManager,
+    USER_ROLE.user,
+  ),
+);
+
 export const project_imageRoutes = router;

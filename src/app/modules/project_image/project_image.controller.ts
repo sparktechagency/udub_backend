@@ -60,6 +60,19 @@ const updateImage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getProjectImages = catchAsync(async (req, res) => {
+  const result = await project_imageServices.getProjectImages(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Images retrieved successfully',
+    data: result,
+  });
+});
 
-const Project_imageController = { uploadImagesForProject, updateImage };
+const Project_imageController = {
+  uploadImagesForProject,
+  updateImage,
+  getProjectImages,
+};
 export default Project_imageController;
