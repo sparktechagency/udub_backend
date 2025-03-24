@@ -5,6 +5,7 @@ import { Project } from '../project/project.model';
 import { ProjectDocument } from './project_document.model';
 import { IProjectDocument } from './project_document.interface';
 import unlinkFile from '../../helper/unLinkFile';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const uploadDocumentsForProject = async (userId: string, payload: any) => {
   const project = await Project.exists({ _id: payload.projectId });
@@ -53,10 +54,36 @@ const updateDocument = async (
   return result;
 };
 
-const getProjectDocuments = async (id: string) => {
-  const result = await ProjectDocument.find({ projectId: id });
+const getProjectDocuments = async (
+  id: string,
+  query: Record<string, unknown>,
+) => {
+  const documentQuery = new QueryBuilder(
+    ProjectDocument.find({ projectId: id }),
+    query,
+  )
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await documentQuery.countTotal();
+  const result = await documentQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
+};
+
+const getSingleDocument = async (id: string) => {
+  const result = await ProjectDocument.findById(id);
   return result;
 };
 
-const ProjectDocumentService = { uploadDocumentsForProject, updateDocument };
+const ProjectDocumentService = {
+  uploadDocumentsForProject,
+  updateDocument,
+  getProjectDocuments,
+  getSingleDocument,
+};
 export default ProjectDocumentService;
