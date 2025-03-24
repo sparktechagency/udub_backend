@@ -8,16 +8,16 @@ import ProjectController from './project.controller';
 
 const router = express.Router();
 
-router.patch(
+router.post(
   '/create-project',
   auth(USER_ROLE.superAdmin),
-  uploadFile(),
-  (req, res, next) => {
-    if (req.body.data) {
-      req.body = JSON.parse(req.body.data);
-    }
-    next();
-  },
+  // uploadFile(),
+  // (req, res, next) => {
+  //   if (req.body.data) {
+  //     req.body = JSON.parse(req.body.data);
+  //   }
+  //   next();
+  // },
   validateRequest(ProjectValidations.createProjectValidationSchema),
   ProjectController.createProject,
 );
@@ -36,13 +36,13 @@ router.get(
 
 router.get(
   '/get-single-project/:id',
-  auth(
-    USER_ROLE.superAdmin,
-    USER_ROLE.financeManager,
-    USER_ROLE.officeManager,
-    USER_ROLE.user,
-    USER_ROLE.manager,
-  ),
+  // auth(
+  //   USER_ROLE.superAdmin,
+  //   USER_ROLE.financeManager,
+  //   USER_ROLE.officeManager,
+  //   USER_ROLE.user,
+  //   USER_ROLE.manager,
+  // ),
   ProjectController.getSingleProject,
 );
 

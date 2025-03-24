@@ -4,13 +4,13 @@ import sendResponse from '../../utilities/sendResponse';
 import projectServices from './project.service';
 
 const createProject = catchAsync(async (req, res) => {
-  const { files } = req;
-  if (files && typeof files === 'object' && 'images' in files) {
-    req.body.images = files['image'].map((file) => file.path);
-  }
-  if (files && typeof files === 'object' && 'documents' in files) {
-    req.body.documents = files['documents'].map((file) => file.path);
-  }
+  // const { files } = req;
+  // if (files && typeof files === 'object' && 'images' in files) {
+  //   req.body.images = files['image'].map((file) => file.path);
+  // }
+  // if (files && typeof files === 'object' && 'documents' in files) {
+  //   req.body.documents = files['documents'].map((file) => file.path);
+  // }
   const result = await projectServices.createProject(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,

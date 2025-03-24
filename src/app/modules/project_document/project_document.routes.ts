@@ -8,7 +8,7 @@ import ProjectDocumentController from './project_document.controller';
 
 const router = express.Router();
 
-router.patch(
+router.post(
   '/upload-project-documents',
   auth(USER_ROLE.user),
   uploadFile(),
