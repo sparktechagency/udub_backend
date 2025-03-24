@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 import validateRequest from '../../middlewares/validateRequest';
-import { uploadFile } from '../../helper/fileUploader';
+// import { uploadFile } from '../../helper/fileUploader';
 import ProjectValidations from './project.validation';
 import ProjectController from './project.controller';
 
