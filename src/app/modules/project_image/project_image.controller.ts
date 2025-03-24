@@ -61,7 +61,10 @@ const updateImage = catchAsync(async (req, res) => {
   });
 });
 const getProjectImages = catchAsync(async (req, res) => {
-  const result = await project_imageServices.getProjectImages(req.params.id);
+  const result = await project_imageServices.getProjectImages(
+    req.params.id,
+    req.query,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

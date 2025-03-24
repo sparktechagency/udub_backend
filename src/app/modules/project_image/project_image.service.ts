@@ -5,6 +5,7 @@ import { ProjectImage } from './project_image.model';
 import { Project } from '../project/project.model';
 import { IProject_image } from './project_image.interface';
 import unlinkFile from '../../helper/unLinkFile';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const uploadImageForProject = async (userId: string, payload: any) => {
   const project = await Project.exists({ _id: payload.projectId });
@@ -53,9 +54,22 @@ const updateImage = async (
   return result;
 };
 
-const getProjectImages = async (id: string) => {
-  const result = await ProjectImage.find({ projectId: id });
-  return result;
+const getProjectImages = async (id: string, query: Record<string, unknown>) => {
+  const imageQuery = new QueryBuilder(
+    ProjectImage.find({ projectId: id }),
+    query,
+  )
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await imageQuery.countTotal();
+  const result = await imageQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleImage = async (id: string) => {

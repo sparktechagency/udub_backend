@@ -53,5 +53,10 @@ const updateDocument = async (
   return result;
 };
 
+const getProjectDocuments = async (id: string) => {
+  const result = await ProjectDocument.find({ projectId: id });
+  return result;
+};
+
 const ProjectDocumentService = { uploadDocumentsForProject, updateDocument };
 export default ProjectDocumentService;
