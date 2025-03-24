@@ -35,4 +35,25 @@ router.patch(
   ProjectDocumentController.updateDocument,
 );
 
+router.get(
+  '/get-project-documents/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.financeManager,
+    USER_ROLE.user,
+  ),
+);
+router.get(
+  '/get-single-document/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.financeManager,
+    USER_ROLE.user,
+  ),
+);
+
 export const projectDocumentRoutes = router;
