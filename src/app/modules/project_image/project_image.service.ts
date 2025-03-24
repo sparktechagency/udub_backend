@@ -53,5 +53,10 @@ const updateImage = async (
   return result;
 };
 
+const getProjectImages = async (id: string) => {
+  const result = await ProjectImage.find({ projectId: id });
+  return result;
+};
+
 const Project_imageServices = { uploadImageForProject, updateImage };
 export default Project_imageServices;
