@@ -79,8 +79,11 @@ const updateMaterial = async (
   return result;
 };
 
-const getAllMatetial = async (query: Record<string, unknown>) => {
-  const resultQuery = new QueryBuilder(Material.find(), query)
+const getProjectMaterial = async (
+  id: string,
+  query: Record<string, unknown>,
+) => {
+  const resultQuery = new QueryBuilder(Material.find({ project: id }), query)
     .search(['title'])
     .filter()
     .sort()
@@ -103,7 +106,7 @@ const getSingleMaterial = async (id: string) => {
 const MaterialServices = {
   createMaterial,
   updateMaterial,
-  getAllMatetial,
+  getProjectMaterial,
   getSingleMaterial,
 };
 export default MaterialServices;

@@ -36,7 +36,10 @@ const updateMaterial = catchAsync(async (req, res) => {
   });
 });
 const getAllMatetial = catchAsync(async (req, res) => {
-  const result = await MaterialServices.getAllMatetial(req.query);
+  const result = await MaterialServices.getProjectMaterial(
+    req.params.id,
+    req.query,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

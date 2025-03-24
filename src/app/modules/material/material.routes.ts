@@ -42,7 +42,7 @@ router.patch(
 );
 
 router.get(
-  '/get-materials',
+  '/get-project-materials/:id',
   auth(
     USER_ROLE.manager,
     USER_ROLE.superAdmin,

@@ -20,4 +20,4 @@ const PaymentSchema = new Schema<IPayment>(
   { timestamps: true },
 );
 
-export const Material = model<IPayment>('Payment', PaymentSchema);
+export const Payment = model<IPayment>('Payment', PaymentSchema);
