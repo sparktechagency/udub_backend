@@ -45,6 +45,21 @@ const getAllMatetial = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getSingleMaterial = catchAsync(async (req, res) => {
+  const result = await MaterialServices.getSingleMaterial(req.params.id);
 
-const MaterialController = { addMaterial, updateMaterial, getAllMatetial };
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Material retrieved successfully',
+    data: result,
+  });
+});
+
+const MaterialController = {
+  addMaterial,
+  updateMaterial,
+  getAllMatetial,
+  getSingleMaterial,
+};
 export default MaterialController;

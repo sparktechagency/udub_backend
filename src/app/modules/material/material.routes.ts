@@ -50,5 +50,14 @@ router.get(
     USER_ROLE.user,
   ),
 );
+router.get(
+  '/get-single-material/:id',
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+  ),
+);
 
 export const materialRoutes = router;

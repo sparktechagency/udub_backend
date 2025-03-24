@@ -95,5 +95,15 @@ const getAllMatetial = async (query: Record<string, unknown>) => {
   };
 };
 
-const MaterialServices = { createMaterial, updateMaterial, getAllMatetial };
+const getSingleMaterial = async (id: string) => {
+  const result = await Material.findById(id);
+  return result;
+};
+
+const MaterialServices = {
+  createMaterial,
+  updateMaterial,
+  getAllMatetial,
+  getSingleMaterial,
+};
 export default MaterialServices;
