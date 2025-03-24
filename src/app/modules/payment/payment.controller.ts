@@ -30,8 +30,34 @@ const updatePayment = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPayments = catchAsync(async (req, res) => {
+  const result = await PaymentService.getProjectPayments(
+    req.params.id,
+    req.query,
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Payments retrieved successfully',
+    data: result,
+  });
+});
+const getSinglePayment = catchAsync(async (req, res) => {
+  const result = await PaymentService.getSinglePayment(req.params.id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Payment retrieved successfully',
+    data: result,
+  });
+});
+
 const PaymentController = {
   addPayment,
   updatePayment,
+  getAllPayments,
+  getSinglePayment,
 };
 export default PaymentController;

@@ -36,4 +36,24 @@ router.patch(
   PaymentController.updatePayment,
 );
 
+router.get(
+  '/get-project-payments/:id',
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+    USER_ROLE.financeManager,
+  ),
+);
+router.get(
+  '/get-single-payment/:id',
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+    USER_ROLE.financeManager,
+  ),
+);
 export const paymentRoutes = router;
