@@ -38,5 +38,32 @@ const updateDocument = catchAsync(async (req, res) => {
   });
 });
 
-const ProjectDocumentController = { uploadImagesForProject, updateDocument };
+const getProjectDocuments = catchAsync(async (req, res) => {
+  const result = await ProjectDocumentService.getProjectDocuments(
+    req.params.id,
+    req.query,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Documents retrieved successfully',
+    data: result,
+  });
+});
+const getSingleDocument = catchAsync(async (req, res) => {
+  const result = await ProjectDocumentService.getSingleDocument(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Document retrieved successfully',
+    data: result,
+  });
+});
+
+const ProjectDocumentController = {
+  uploadImagesForProject,
+  updateDocument,
+  getProjectDocuments,
+  getSingleDocument,
+};
 export default ProjectDocumentController;
