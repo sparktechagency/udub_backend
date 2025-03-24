@@ -58,9 +58,15 @@ const getProjectImages = async (id: string) => {
   return result;
 };
 
+const getSingleImage = async (id: string) => {
+  const result = await ProjectImage.findById(id);
+  return result;
+};
+
 const Project_imageServices = {
   uploadImageForProject,
   updateImage,
   getProjectImages,
+  getSingleImage,
 };
 export default Project_imageServices;

@@ -44,5 +44,15 @@ router.get(
     USER_ROLE.user,
   ),
 );
+router.get(
+  '/get-single-image/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.financeManager,
+    USER_ROLE.user,
+  ),
+);
 
 export const project_imageRoutes = router;
