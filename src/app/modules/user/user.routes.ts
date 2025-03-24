@@ -53,4 +53,10 @@ router.delete(
   userControllers.deleteUserAccount,
 );
 
+router.get(
+  '/get-all-user',
+  auth(USER_ROLE.superAdmin),
+  userControllers.getAllUser,
+);
+
 export const userRoutes = router;

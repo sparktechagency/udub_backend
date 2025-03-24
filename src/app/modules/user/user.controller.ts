@@ -61,12 +61,22 @@ const deleteUserAccount = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAllUser = catchAsync(async (req, res) => {
+  const result = await userServices.getAllUserFromDB(req.query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `User retrieved successfully`,
+    data: result,
+  });
+});
 
 const userController = {
   registerUser,
 
   updateUserProfile,
-
+  getAllUser,
   getMyProfile,
   deleteUserAccount,
 };

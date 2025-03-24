@@ -5,6 +5,7 @@ import AppError from '../../error/appError';
 import httpStatus from 'http-status';
 import { TUser } from './user.interface';
 import { JwtPayload } from 'jsonwebtoken';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 const registerUser = async (payload: TUser) => {
   const emailExist = await User.findOne({ email: payload.email });
@@ -46,6 +47,21 @@ const deleteUserAccount = async (user: JwtPayload, password: string) => {
   return null;
 };
 
+const getAllUserFromDB = async (query: Record<string, unknown>) => {
+  const resultQuery = new QueryBuilder(User.find(), query)
+    .search(['title'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await resultQuery.countTotal();
+  const result = await resultQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
+};
+
 // all cron jobs for users
 
 const userServices = {
@@ -53,6 +69,7 @@ const userServices = {
   updateUserProfile,
   getMyProfile,
   deleteUserAccount,
+  getAllUserFromDB,
 };
 
 export default userServices;
