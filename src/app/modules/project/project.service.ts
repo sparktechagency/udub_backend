@@ -71,6 +71,38 @@ const deleteProject = async (id: string) => {
 };
 
 const updateProject = async (id: string, payload: Partial<IProject>) => {
+  const managers = await User.find({
+    _id: {
+      $in: [
+        payload.projectManager,
+        payload.officeManager,
+        payload.financeManager,
+      ],
+    },
+  }).select('_id');
+
+  const existingManagerIds = new Set(
+    managers.map((manager) => manager._id.toString()),
+  );
+
+  if (
+    payload?.projectManager &&
+    !existingManagerIds.has(payload.projectManager.toString())
+  ) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project manager not found');
+  }
+  if (
+    payload?.officeManager &&
+    !existingManagerIds.has(payload.officeManager.toString())
+  ) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Office manager not found');
+  }
+  if (
+    payload?.financeManager &&
+    !existingManagerIds.has(payload.financeManager.toString())
+  ) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
+  }
   const project = await Project.exists({ _id: id });
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
