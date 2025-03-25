@@ -49,6 +49,7 @@ router.get(
     USER_ROLE.officeManager,
     USER_ROLE.user,
   ),
+  MaterialController.getAllMatetial,
 );
 router.get(
   '/get-single-material/:id',
@@ -58,6 +59,7 @@ router.get(
     USER_ROLE.officeManager,
     USER_ROLE.user,
   ),
+  MaterialController.getSingleMaterial,
 );
 
 export const materialRoutes = router;
