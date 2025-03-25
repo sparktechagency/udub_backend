@@ -21,12 +21,14 @@ const updateUserProfile = catchAsync(async (req, res) => {
     profile_image_path = files['profile_image'][0].path;
   }
   const imageName = req.user.id;
-  const { secure_url } = await sendImageToCloudinary(
-    imageName,
-    profile_image_path as string,
-    'profile_image',
-  );
-  req.body.profile_image = secure_url as string;
+  if (profile_image_path) {
+    const { secure_url } = await sendImageToCloudinary(
+      imageName,
+      profile_image_path as string,
+      'profile_image',
+    );
+    req.body.profile_image = secure_url as string;
+  }
 
   const result = await userServices.updateUserProfile(req.user.id, req.body);
   sendResponse(res, {
