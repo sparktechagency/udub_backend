@@ -47,8 +47,8 @@ const getAllProject = async (query: Record<string, unknown>) => {
   const result = await projectQuery.modelQuery;
   const meta = await projectQuery.countTotal();
   return {
-    result,
     meta,
+    result,
   };
 };
 
