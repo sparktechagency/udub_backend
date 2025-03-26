@@ -14,6 +14,7 @@ import multer from 'multer';
 import sendContactUsEmail from './app/helper/sendContactUsEmail';
 import getSheet from './getSheet';
 import getSpecificSheet from './getSpecificSheet';
+import { generatePresignedUrl } from './app/helper/s3';
 const upload = multer({ dest: 'uploads/' });
 // parser
 app.use(express.json());
@@ -40,6 +41,23 @@ app.use('/uploads', express.static('uploads'));
 app.use('/', router);
 app.post('/contact-us', sendContactUsEmail);
 
+// for s3 bucket--------
+app.post('/generate-presigned-url', async (req: Request, res: Response) => {
+  const { fileType, fileCategory }: { fileType: string; fileCategory: string } =
+    req.body;
+
+  try {
+    const { uploadURL, fileName } = await generatePresignedUrl({
+      fileType,
+      fileCategory,
+    });
+    res.json({ uploadURL, fileName });
+  } catch (err) {
+    res.status(500).send('Error generating presigned URL');
+  }
+});
+
+// ==================
 app.get('/', async (req, res) => {
   res.send({ message: 'nice to meet you' });
 });
