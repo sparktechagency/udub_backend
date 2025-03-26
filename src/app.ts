@@ -41,7 +41,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/', router);
 app.post('/contact-us', sendContactUsEmail);
 
-// for s3 bucket--------
+// for s3 bucket--------------
 app.post('/generate-presigned-url', async (req: Request, res: Response) => {
   const { fileType, fileCategory }: { fileType: string; fileCategory: string } =
     req.body;
