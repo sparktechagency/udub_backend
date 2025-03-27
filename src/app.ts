@@ -18,6 +18,8 @@ import {
   generateMultiplePresignedUrls,
   generatePresignedUrl,
 } from './app/helper/presignedUrlGenerator';
+import AppError from './app/error/appError';
+import httpStatus from 'http-status';
 const upload = multer({ dest: 'uploads/' });
 // parser
 app.use(express.json());
@@ -47,6 +49,12 @@ app.post('/contact-us', sendContactUsEmail);
 // for s3 bucket--------------
 app.post('/generate-presigned-url', async (req, res) => {
   const { fileType, fileCategory } = req.body;
+  if (!fileType || !fileCategory) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'File type and file category is required',
+    );
+  }
 
   try {
     const result = await generatePresignedUrl({ fileType, fileCategory });
