@@ -16,7 +16,7 @@ const registerUser = async (payload: TUser) => {
   const result = await User.create(payload);
   return result;
 };
-
+///
 const updateUserProfile = async (id: string, payload: Partial<TUser>) => {
   const user = await User.findById(id);
   if (!user) {
@@ -69,7 +69,7 @@ const getAllUserFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
-// all cron jobs for users
+// all cron jobs for users---------------
 
 const userServices = {
   registerUser,
