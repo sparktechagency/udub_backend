@@ -79,7 +79,7 @@ app.post('/generate-multiple-presigned-urls', async (req, res) => {
 
 // ==================
 app.get('/', async (req, res) => {
-  res.send({ message: 'nice to meet you' });
+  res.send({ message: 'Welcome to Candor' });
 });
 
 app.get('/get-sheet', async (req, res) => {
