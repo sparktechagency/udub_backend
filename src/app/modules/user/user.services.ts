@@ -27,7 +27,7 @@ const updateUserProfile = async (id: string, payload: Partial<TUser>) => {
     runValidators: true,
   });
 
-  if (user.profile_image) {
+  if (payload.profile_image) {
     const oldFileName = user.profile_image.split('amazonaws.com/')[1];
     console.log('oldfile name', oldFileName);
     await deleteFileFromS3(oldFileName);

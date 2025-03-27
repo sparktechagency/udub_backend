@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import mime from 'mime-types';
+import unlinkFile from './unLinkFile';
 dotenv.config();
 
 AWS.config.update({
@@ -33,7 +34,7 @@ export const uploadToS3FromServer = async (
   try {
     // Upload the file to S3
     const uploadResult = await s3.upload(params as any).promise();
-
+    unlinkFile(filePath);
     // Return the file URL from the S3 response
     return uploadResult.Location;
   } catch (error: any) {
