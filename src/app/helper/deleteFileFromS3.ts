@@ -22,16 +22,19 @@ import AWS from 'aws-sdk';
 const s3 = new AWS.S3();
 
 export const deleteFileFromS3 = async (fileName: string) => {
+  // Decode the file name (URL-decoding any encoded characters like %20, %2F, etc.)
+  const decodedFileName = decodeURIComponent(fileName);
+
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME!, // Bucket name from environment
-    Key: fileName, // S3 key (file name with path)
+    Key: decodedFileName, // S3 key (file name with path)
   };
 
   try {
     // Check if the file exists before attempting to delete
     const headParams = {
       Bucket: process.env.AWS_BUCKET_NAME!,
-      Key: fileName,
+      Key: decodedFileName,
     };
 
     // Check if the file exists in S3 (headObject doesn't download the file, it only checks existence)
@@ -39,7 +42,7 @@ export const deleteFileFromS3 = async (fileName: string) => {
       await s3.headObject(headParams).promise(); // This will throw an error if the file doesn't exist
     } catch (err: any) {
       if (err.code === 'NotFound') {
-        console.log(`File ${fileName} does not exist in S3.`);
+        console.log(`File ${decodedFileName} does not exist in S3.`);
         return;
       }
       throw err; // Re-throw if it's another error (e.g., permissions, connection)
@@ -47,10 +50,10 @@ export const deleteFileFromS3 = async (fileName: string) => {
 
     // If file exists, delete it
     await s3.deleteObject(params).promise();
-    console.log(`Successfully deleted ${fileName} from S3`);
+    console.log(`Successfully deleted ${decodedFileName} from S3`);
   } catch (err: any) {
     if (err.code === 'NotFound') {
-      console.error(`File ${fileName} was not found in S3.`);
+      console.error(`File ${decodedFileName} was not found in S3.`);
     } else {
       console.error('Error deleting file from S3:', err);
     }

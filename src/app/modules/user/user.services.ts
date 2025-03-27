@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import { TUser } from './user.interface';
 import { JwtPayload } from 'jsonwebtoken';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 
 const registerUser = async (payload: TUser) => {
   const emailExist = await User.findOne({ email: payload.email });
@@ -25,6 +26,12 @@ const updateUserProfile = async (id: string, payload: Partial<TUser>) => {
     new: true,
     runValidators: true,
   });
+
+  if (user.profile_image) {
+    const oldFileName = user.profile_image.split('amazonaws.com/')[1];
+    console.log('oldfile name', oldFileName);
+    await deleteFileFromS3(oldFileName);
+  }
   return result;
 };
 

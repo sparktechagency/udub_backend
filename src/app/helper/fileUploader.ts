@@ -9,7 +9,7 @@ export const uploadFile = () => {
       let uploadPath = '';
 
       if (file.fieldname === 'profile_image') {
-        uploadPath = 'uploads/images/profile';
+        uploadPath = 'uploads/images/profile_image';
       } else if (file.fieldname === 'category_image') {
         uploadPath = 'uploads/images/category';
       } else if (file.fieldname === 'project_images') {

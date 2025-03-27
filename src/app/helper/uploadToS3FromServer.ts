@@ -19,13 +19,13 @@ export const uploadToS3FromServer = async (
 ): Promise<string> => {
   const fileContent = fs.readFileSync(filePath);
   const mimeType = mime.lookup(filePath);
-
+  const s3Key = filePath.replace(/\\/g, '/');
   if (!mimeType) {
     throw new Error('Unable to determine MIME type for file');
   }
   const params = {
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: filePath,
+    Key: s3Key,
     Body: fileContent,
     ContentType: 'image/jpeg',
   };
