@@ -45,7 +45,6 @@ app.post('/contact-us', sendContactUsEmail);
 app.post('/generate-presigned-url', async (req: Request, res: Response) => {
   const { fileType, fileCategory }: { fileType: string; fileCategory: string } =
     req.body;
-
   try {
     const { uploadURL, fileName } = await generatePresignedUrl({
       fileType,
