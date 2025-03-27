@@ -53,3 +53,19 @@ export const generatePresignedUrl = async ({
     throw new Error('Error generating presigned URL');
   }
 };
+
+export const generateMultiplePresignedUrls = async (
+  files: Array<{ fileType: string; fileCategory: string }>,
+) => {
+  try {
+    const presignedUrls = await Promise.all(
+      files.map(async (file) => {
+        return await generatePresignedUrl(file);
+      }),
+    );
+    return presignedUrls;
+  } catch (err) {
+    console.error('Error generating multiple presigned URLs:', err);
+    throw new Error('Error generating multiple presigned URLs');
+  }
+};

@@ -14,7 +14,10 @@ import multer from 'multer';
 import sendContactUsEmail from './app/helper/sendContactUsEmail';
 import getSheet from './getSheet';
 import getSpecificSheet from './getSpecificSheet';
-import { generatePresignedUrl } from './app/helper/s3';
+import {
+  generateMultiplePresignedUrls,
+  generatePresignedUrl,
+} from './app/helper/presignedUrlGenerator';
 const upload = multer({ dest: 'uploads/' });
 // parser
 app.use(express.json());
@@ -42,17 +45,28 @@ app.use('/', router);
 app.post('/contact-us', sendContactUsEmail);
 
 // for s3 bucket--------------
-app.post('/generate-presigned-url', async (req: Request, res: Response) => {
-  const { fileType, fileCategory }: { fileType: string; fileCategory: string } =
-    req.body;
+app.post('/generate-presigned-url', async (req, res) => {
+  const { fileType, fileCategory } = req.body;
+
   try {
-    const { uploadURL, fileName } = await generatePresignedUrl({
-      fileType,
-      fileCategory,
-    });
-    res.json({ uploadURL, fileName });
-  } catch (err) {
-    res.status(500).send('Error generating presigned URL');
+    const result = await generatePresignedUrl({ fileType, fileCategory });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Error generating pre-signed URL' });
+  }
+});
+
+// Endpoint for generating multiple pre-signed URLs
+app.post('/generate-multiple-presigned-urls', async (req, res) => {
+  const { files } = req.body; // Expecting an array of file details [{ fileType, fileCategory }]
+
+  try {
+    const result = await generateMultiplePresignedUrls(files);
+    res.json(result);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Error generating multiple pre-signed URLs' });
   }
 });
 
