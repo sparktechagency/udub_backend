@@ -56,9 +56,8 @@ app.post('/generate-presigned-url', async (req, res) => {
   }
 });
 
-// Endpoint for generating multiple pre-signed URLs
 app.post('/generate-multiple-presigned-urls', async (req, res) => {
-  const { files } = req.body; // Expecting an array of file details [{ fileType, fileCategory }]
+  const { files } = req.body;
 
   try {
     const result = await generateMultiplePresignedUrls(files);

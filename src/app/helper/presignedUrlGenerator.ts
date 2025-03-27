@@ -1,5 +1,7 @@
 import AWS from 'aws-sdk';
 import dotenv from 'dotenv';
+import AppError from '../error/appError';
+import httpStatus from 'http-status';
 
 dotenv.config();
 
@@ -50,7 +52,10 @@ export const generatePresignedUrl = async ({
     return { uploadURL: url, fileName };
   } catch (err) {
     console.error('Error generating presigned URL:', err);
-    throw new Error('Error generating presigned URL');
+    throw new AppError(
+      httpStatus.SERVICE_UNAVAILABLE,
+      'Error generating multiple presigned URLs',
+    );
   }
 };
 
@@ -66,6 +71,9 @@ export const generateMultiplePresignedUrls = async (
     return presignedUrls;
   } catch (err) {
     console.error('Error generating multiple presigned URLs:', err);
-    throw new Error('Error generating multiple presigned URLs');
+    throw new AppError(
+      httpStatus.SERVICE_UNAVAILABLE,
+      'Error generating multiple presigned URLs',
+    );
   }
 };
