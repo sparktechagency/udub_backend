@@ -9,7 +9,7 @@ const registerUser = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User registration successful.Check email for verify your email',
+    message: `${result.role} is created`,
     data: result,
   });
 });
