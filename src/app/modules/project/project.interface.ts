@@ -9,4 +9,5 @@ export interface IProject {
   projectManager: Types.ObjectId;
   officeManager: Types.ObjectId;
   financeManager: Types.ObjectId;
+  projectImage: string;
 }

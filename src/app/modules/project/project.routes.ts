@@ -5,19 +5,20 @@ import validateRequest from '../../middlewares/validateRequest';
 // import { uploadFile } from '../../helper/fileUploader';
 import ProjectValidations from './project.validation';
 import ProjectController from './project.controller';
+import { uploadFile } from '../../helper/fileUploader';
 
 const router = express.Router();
 
 router.post(
   '/create-project',
   auth(USER_ROLE.superAdmin),
-  // uploadFile(),
-  // (req, res, next) => {
-  //   if (req.body.data) {
-  //     req.body = JSON.parse(req.body.data);
-  //   }
-  //   next();
-  // },
+  uploadFile(),
+  (req, res, next) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
   validateRequest(ProjectValidations.createProjectValidationSchema),
   ProjectController.createProject,
 );

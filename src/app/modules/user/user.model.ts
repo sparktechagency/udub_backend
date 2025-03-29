@@ -30,7 +30,6 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
-      // select: false,
     },
     passwordChangedAt: {
       type: Date,
@@ -80,8 +79,8 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 // statics method for check is user exists
-userSchema.statics.isUserExists = async function (phoneNumber: string) {
-  return await User.findOne({ phoneNumber }).select('+password');
+userSchema.statics.isUserExists = async function (email: string) {
+  return await User.findOne({ email }).select('+password');
 };
 // statics method for check password match  ----
 userSchema.statics.isPasswordMatched = async function (

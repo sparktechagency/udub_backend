@@ -19,6 +19,7 @@ const ProjectSchema = new Schema<IProject>(
       ref: 'User',
       required: true,
     },
+    projectImage: { type: String, default: '' },
   },
   { timestamps: true },
 );

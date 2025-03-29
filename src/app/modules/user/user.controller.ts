@@ -71,6 +71,7 @@ const getMyProfile = catchAsync(async (req, res) => {
 });
 
 const deleteUserAccount = catchAsync(async (req, res) => {
+  console.log('req', req.params, req.body);
   const result = await userServices.deleteUserAccount(
     req.user,
     req.body.password,
@@ -95,13 +96,13 @@ const getAllUser = catchAsync(async (req, res) => {
 });
 const deleteAccount = catchAsync(async (req, res) => {
   const result = await userServices.deleteAccount(req.params.id);
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: `User deleted successfully`,
     data: result,
   });
+  return null;
 });
 
 const userController = {

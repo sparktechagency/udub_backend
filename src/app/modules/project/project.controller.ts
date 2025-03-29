@@ -2,15 +2,19 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import projectServices from './project.service';
+import { uploadToS3FromServer } from '../../helper/uploadToS3FromServer';
 
 const createProject = catchAsync(async (req, res) => {
-  // const { files } = req;
-  // if (files && typeof files === 'object' && 'images' in files) {
-  //   req.body.images = files['image'].map((file) => file.path);
-  // }
-  // if (files && typeof files === 'object' && 'documents' in files) {
-  //   req.body.documents = files['documents'].map((file) => file.path);
-  // }
+  const { files } = req;
+  let project_image_path;
+  if (files && typeof files === 'object' && 'project_iamge' in files) {
+    project_image_path = files['project_iamge'][0].path;
+  }
+  // const imageName = req.user.id;
+  if (project_image_path) {
+    const project_image_url = await uploadToS3FromServer(project_image_path);
+    req.body.projectImage = project_image_url as string;
+  }
   const result = await projectServices.createProject(req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,

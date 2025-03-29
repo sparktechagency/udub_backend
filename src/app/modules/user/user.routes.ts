@@ -56,8 +56,7 @@ router.patch(
 router.delete(
   '/delete-account/:id',
   auth(USER_ROLE.superAdmin),
-  validateRequest(userValidations.deleteUserAccountValidationSchema),
-  userControllers.deleteUserAccount,
+  userControllers.deleteAccount,
 );
 
 router.get(
