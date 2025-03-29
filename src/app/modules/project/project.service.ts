@@ -39,7 +39,13 @@ const createProject = async (payload: IProject) => {
 // get all project
 
 const getAllProject = async (query: Record<string, unknown>) => {
-  const projectQuery = new QueryBuilder(Project.find(), query)
+  const projectQuery = new QueryBuilder(
+    Project.find()
+      .populate({ path: 'projectManager' })
+      .populate({ path: 'officeManager' })
+      .populate({ path: 'financeManager' }),
+    query,
+  )
     .search(['name', 'title'])
     .filter()
     .sort()
