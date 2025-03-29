@@ -68,6 +68,15 @@ const getAllUserFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
+const deleteAccount = async (id: string) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const result = await User.findByIdAndDelete(id);
+  return result;
+};
+
 // all cron jobs for users---------------
 
 const userServices = {
@@ -76,6 +85,7 @@ const userServices = {
   getMyProfile,
   deleteUserAccount,
   getAllUserFromDB,
+  deleteAccount,
 };
 
 export default userServices;
