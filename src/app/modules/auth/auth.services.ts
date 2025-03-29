@@ -12,7 +12,7 @@ import resetPasswordEmailBody from '../../mailTemplate/resetPasswordEmailBody';
 import sendEmail from '../../utilities/sendEmail';
 
 const generateVerifyCode = (): number => {
-  return Math.floor(10000 + Math.random() * 90000);
+  return Math.floor(100000 + Math.random() * 90000);
 };
 const loginUserIntoDB = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload.email });

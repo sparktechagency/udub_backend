@@ -1,42 +1,91 @@
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import AWS from 'aws-sdk';
+// import dotenv from 'dotenv';
+// import fs from 'fs';
+// import mime from 'mime-types';
+// import unlinkFile from './unLinkFile';
+// dotenv.config();
+
+// AWS.config.update({
+//   accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+//   region: process.env.AWS_REGION!,
+// });
+
+// const s3 = new AWS.S3();
+
+// export const uploadToS3FromServer = async (
+//   filePath: string,
+//   //   fileName: string,
+// ): Promise<string> => {
+//   const fileContent = fs.readFileSync(filePath);
+//   const mimeType = mime.lookup(filePath);
+//   const s3Key = filePath.replace(/\\/g, '/');
+//   if (!mimeType) {
+//     throw new Error('Unable to determine MIME type for file');
+//   }
+//   const params = {
+//     Bucket: process.env.AWS_BUCKET_NAME,
+//     Key: s3Key,
+//     Body: fileContent,
+//     ContentType: 'image/jpeg',
+//   };
+
+//   try {
+//     // Upload the file to S3
+//     const uploadResult = await s3.upload(params as any).promise();
+//     unlinkFile(filePath);
+//     // Return the file URL from the S3 response
+//     return uploadResult.Location;
+//   } catch (error: any) {
+//     throw new Error(`Error uploading file to S3: ${error.message}`);
+//   }
+// };
+
+// with updated version
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import mime from 'mime-types';
 import unlinkFile from './unLinkFile';
 dotenv.config();
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+// Create a new S3 client
+const s3 = new S3Client({
   region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
 });
-
-const s3 = new AWS.S3();
 
 export const uploadToS3FromServer = async (
   filePath: string,
-  //   fileName: string,
 ): Promise<string> => {
   const fileContent = fs.readFileSync(filePath);
   const mimeType = mime.lookup(filePath);
   const s3Key = filePath.replace(/\\/g, '/');
+
   if (!mimeType) {
     throw new Error('Unable to determine MIME type for file');
   }
-  const params = {
+
+  const command = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: s3Key,
     Body: fileContent,
-    ContentType: 'image/jpeg',
-  };
+    ContentType: mimeType,
+  });
 
   try {
-    // Upload the file to S3
-    const uploadResult = await s3.upload(params as any).promise();
+    await s3.send(command);
     unlinkFile(filePath);
-    // Return the file URL from the S3 response
-    return uploadResult.Location;
+
+    // Manually construct S3 object URL (based on standard public S3 format)
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`;
+
+    return fileUrl;
   } catch (error: any) {
     throw new Error(`Error uploading file to S3: ${error.message}`);
   }

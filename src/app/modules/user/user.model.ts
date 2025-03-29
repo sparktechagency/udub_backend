@@ -16,13 +16,16 @@ const userSchema = new Schema<TUser>(
     },
     phone: {
       type: String,
+      default: '',
       // unique: true,
     },
     address: {
       type: String,
+      default: '',
     },
     profile_image: {
       type: String,
+      default: '',
     },
     password: {
       type: String,

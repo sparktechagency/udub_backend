@@ -46,7 +46,7 @@ router.get(
   userControllers.getMyProfile,
 );
 
-router.delete(
+router.patch(
   '/delete-account',
   auth(USER_ROLE.user),
   validateRequest(userValidations.deleteUserAccountValidationSchema),
