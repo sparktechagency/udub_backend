@@ -30,6 +30,15 @@ const getAllProject = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getMyProject = catchAsync(async (req, res) => {
+  const result = await projectServices.getMyProject(req.user, req.query);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Project retrieved successfully',
+    data: result,
+  });
+});
 
 // get single project
 const getSingleProject = catchAsync(async (req, res) => {
@@ -66,5 +75,6 @@ const ProjectController = {
   getSingleProject,
   deleteProject,
   updateProject,
+  getMyProject,
 };
 export default ProjectController;

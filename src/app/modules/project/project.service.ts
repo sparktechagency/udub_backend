@@ -4,6 +4,8 @@ import { IProject } from './project.interface';
 import { User } from '../user/user.model';
 import { Project } from './project.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { JwtPayload } from 'jsonwebtoken';
+import { USER_ROLE } from '../user/user.constant';
 
 const createProject = async (payload: IProject) => {
   const managers = await User.find({
@@ -43,6 +45,64 @@ const getAllProject = async (query: Record<string, unknown>) => {
     .sort()
     .paginate()
     .fields();
+
+  const result = await projectQuery.modelQuery;
+  const meta = await projectQuery.countTotal();
+  return {
+    meta,
+    result,
+  };
+};
+const getMyProject = async (
+  userData: JwtPayload,
+  query: Record<string, unknown>,
+) => {
+  let projectQuery;
+  if (userData?.role == USER_ROLE.user) {
+    projectQuery = new QueryBuilder(
+      Project.find({ projectOwnerEmail: userData.email }),
+      query,
+    )
+      .search(['name', 'title'])
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  } else if (userData?.role == USER_ROLE.manager) {
+    projectQuery = new QueryBuilder(
+      Project.find({ projectManager: userData.id }),
+      query,
+    )
+      .search(['name', 'title'])
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  } else if (userData?.role == USER_ROLE.financeManager) {
+    projectQuery = new QueryBuilder(
+      Project.find({ financeManager: userData.id }),
+      query,
+    )
+      .search(['name', 'title'])
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  } else if (userData?.role == USER_ROLE.officeManager) {
+    projectQuery = new QueryBuilder(
+      Project.find({ officeManager: userData.id }),
+      query,
+    )
+      .search(['name', 'title'])
+      .filter()
+      .sort()
+      .paginate()
+      .fields();
+  }
+
+  if (!projectQuery) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Data not found');
+  }
 
   const result = await projectQuery.modelQuery;
   const meta = await projectQuery.countTotal();
@@ -120,5 +180,6 @@ const ProjectServices = {
   getSingleProject,
   deleteProject,
   updateProject,
+  getMyProject,
 };
 export default ProjectServices;

@@ -33,6 +33,17 @@ router.get(
   ),
   ProjectController.getAllProject,
 );
+router.get(
+  '/get-my-project',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+    USER_ROLE.officeManager,
+    USER_ROLE.user,
+    USER_ROLE.manager,
+  ),
+  ProjectController.getMyProject,
+);
 
 router.get(
   '/get-single-project/:id',
