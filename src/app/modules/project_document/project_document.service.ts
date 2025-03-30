@@ -7,6 +7,7 @@ import { IProjectDocument } from './project_document.interface';
 import unlinkFile from '../../helper/unLinkFile';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
+import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 
 const uploadDocumentsForProject = async (userId: string, payload: any) => {
   const project = await Project.findOne({ _id: payload.projectId }).select(
@@ -37,6 +38,8 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
     title: `Document added`,
     message: `Document added for project : ${project.name}`,
     receiver: project.projectOwner.toString(),
+    type: ENUM_NOTIFICATION_TYPE.PROJECT,
+    redirectId: payload.project.toString(),
   };
   sendNotification(notifcationDataForUser);
 
