@@ -6,9 +6,12 @@ import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
 import { IPayment } from './payment.interface';
 import QueryBuilder from '../../builder/QueryBuilder';
+import sendNotification from '../../helper/sendNotification';
 
 const addPayment = async (userId: string, payload: IPayment) => {
-  const project = await Project.findOne({ _id: payload.project });
+  const project = await Project.findOne({ _id: payload.project }).select(
+    'name projectOwner',
+  );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -25,6 +28,13 @@ const addPayment = async (userId: string, payload: IPayment) => {
     createdBy: userId,
     projectOwner: project.projectOwnerEmail,
   });
+
+  const notifcationDataForUser = {
+    title: `Payment info added`,
+    message: `Payment info  added for project : ${project.name}`,
+    receiver: project.projectOwner.toString(),
+  };
+  sendNotification(notifcationDataForUser);
   return result;
 };
 
