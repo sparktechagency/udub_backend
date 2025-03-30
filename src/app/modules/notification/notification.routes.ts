@@ -6,12 +6,24 @@ const router = express.Router();
 
 router.get(
   '/get-notifications',
-  auth(USER_ROLE.superAdmin, USER_ROLE.user),
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+    USER_ROLE.financeManager,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+  ),
   notificationController.getAllNotification,
 );
 router.patch(
   '/see-notifications',
-  auth(USER_ROLE.superAdmin, USER_ROLE.user),
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+    USER_ROLE.financeManager,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+  ),
   notificationController.seeNotification,
 );
 

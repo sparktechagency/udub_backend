@@ -7,6 +7,8 @@ import { USER_ROLE } from '../user/user.constant';
 import { IPayment } from './payment.interface';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
+import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
+import Notification from '../notification/notification.model';
 
 const addPayment = async (userId: string, payload: IPayment) => {
   const project = await Project.findOne({ _id: payload.project }).select(
@@ -33,6 +35,8 @@ const addPayment = async (userId: string, payload: IPayment) => {
     title: `Payment info added`,
     message: `Payment info  added for project : ${project.name}`,
     receiver: project.projectOwner.toString(),
+    type: ENUM_NOTIFICATION_TYPE.PAYMENT,
+    redirectId: result._id.toString(),
   };
   sendNotification(notifcationDataForUser);
   return result;
@@ -45,9 +49,14 @@ const updatePayment = async (
 ) => {
   const payment = await Payment.findById(id);
   if (!payment) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+    throw new AppError(httpStatus.NOT_FOUND, 'payment not found');
   }
-
+  const project = await Project.findById(payment.project).select(
+    'projectOwner financeManager',
+  );
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Prject not found');
+  }
   if (userData.role == USER_ROLE.user) {
     if (payment.projectOwner != userData.id) {
       throw new AppError(
@@ -60,6 +69,39 @@ const updatePayment = async (
     new: true,
     runValidators: true,
   });
+
+  // for send notification ============
+  if (
+    userData.role == USER_ROLE.financeManager ||
+    userData.role == USER_ROLE.superAdmin
+  ) {
+    const notifcationDataForUser = {
+      title: `Payment updated`,
+      message: `Payment updated for project : ${project.name}`,
+      receiver: project.projectOwner.toString(),
+      type: ENUM_NOTIFICATION_TYPE.PAYMENT,
+      redirectId: payment._id.toString(),
+    };
+    sendNotification(notifcationDataForUser);
+  } else {
+    const receivers = [
+      project.projectManager.toString(),
+      project.officeManager.toString(),
+      USER_ROLE.superAdmin,
+    ];
+    const notificationData = receivers.map((receiver) => ({
+      title: `Payment updated`,
+      message: `Payment updated by project owner for project : ${project.name}`,
+      receiver: receiver.toString(),
+      type: ENUM_NOTIFICATION_TYPE.PAYMENT,
+      redirectId: payment._id.toString(),
+    }));
+    await Notification.create(notificationData);
+    notificationData.forEach((data) => {
+      sendNotification(data);
+    });
+  }
+
   return result;
 };
 

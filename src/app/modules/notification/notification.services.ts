@@ -27,7 +27,7 @@ const getAllNotificationFromDB = async (
     return { meta, result };
   } else {
     const notificationQuery = new QueryBuilder(
-      Notification.find({ receiver: user?.profileId }),
+      Notification.find({ receiver: user?.id }),
       query,
     )
       .search(['name'])

@@ -7,8 +7,8 @@ import { uploadToS3FromServer } from '../../helper/uploadToS3FromServer';
 const createProject = catchAsync(async (req, res) => {
   const { files } = req;
   let project_image_path;
-  if (files && typeof files === 'object' && 'project_iamge' in files) {
-    project_image_path = files['project_iamge'][0].path;
+  if (files && typeof files === 'object' && 'project_iamges' in files) {
+    project_image_path = files['project_iamges'][0].path;
   }
   // const imageName = req.user.id;
   if (project_image_path) {

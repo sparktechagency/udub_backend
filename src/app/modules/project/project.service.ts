@@ -9,6 +9,7 @@ import { USER_ROLE } from '../user/user.constant';
 import Notification from '../notification/notification.model';
 import { getIO } from '../../socket/socketManager';
 import getUserNotificationCount from '../../helper/getUserNotificationCount';
+import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
@@ -36,16 +37,21 @@ const createProject = async (payload: IProject) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
   }
 
+  const result = await Project.create(payload);
+
   const receivers = [
     payload.projectManager.toString(),
     payload.financeManager.toString(),
     payload.officeManager.toString(),
+    payload.projectOwner.toString(),
   ];
 
   const notificationData = receivers.map((receiver) => ({
     title: 'New project assigned',
     message: `You assigned a new project: ${payload.name}`,
     receiver,
+    type: ENUM_NOTIFICATION_TYPE.PROJECT,
+    redirectId: result._id,
   }));
 
   await Notification.insertMany(notificationData);
@@ -57,8 +63,6 @@ const createProject = async (payload: IProject) => {
   receivers.forEach((receiver, index) => {
     io.to(receiver).emit('notification', notificationCounts[index]);
   });
-
-  const result = await Project.create(payload);
   return result;
 };
 
@@ -80,6 +84,7 @@ const getAllProject = async (query: Record<string, unknown>) => {
 
   const result = await projectQuery.modelQuery;
   const meta = await projectQuery.countTotal();
+
   return {
     meta,
     result,
