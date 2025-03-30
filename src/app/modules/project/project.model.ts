@@ -4,7 +4,7 @@ import { IProject } from './project.interface';
 const ProjectSchema = new Schema<IProject>(
   {
     name: { type: String, required: true },
-    projectOwnerEmail: { type: String, required: true },
+    projectOwnerEmail: { type: String },
     title: { type: String, required: true },
     startDate: { type: Date, required: true },
     liveLink: { type: String, required: false },
