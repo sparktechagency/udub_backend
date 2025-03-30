@@ -55,6 +55,12 @@ const updateMaterial = async (
   if (!material) {
     throw new AppError(httpStatus.NOT_FOUND, 'Material not found');
   }
+  const project = await Project.findById(material.project).select(
+    'name projectManager financeManager officeManager projectOwner',
+  );
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
   if (
     userData.role == USER_ROLE.manager ||
     userData.role == USER_ROLE.officeManager ||
@@ -63,10 +69,7 @@ const updateMaterial = async (
     if (payload.manufacturer || payload.image || payload.model) {
       throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
     }
-    const project = await Project.findById(material.project);
-    if (!project) {
-      throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
-    }
+
     if (
       project.projectManager.toString() != userData.userId &&
       project.officeManager.toString() != userData.userId
@@ -85,10 +88,31 @@ const updateMaterial = async (
       );
     }
   }
+
   const result = await Material.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
   });
+
+  if (
+    userData.role == USER_ROLE.manager ||
+    userData.role == USER_ROLE.superAdmin ||
+    userData.role == USER_ROLE.officeManager
+  ) {
+    const notifcationDataForUser = {
+      title: `Material updated`,
+      message: `Material updated for project : ${project.name}`,
+      receiver: project.projectOwner.toString(),
+    };
+    sendNotification(notifcationDataForUser);
+  } else {
+    const notifcationDataForUser = {
+      title: `Material updated`,
+      message: `Material updated for project : ${project.name}`,
+      receiver: project.projectOwner.toString(),
+    };
+    sendNotification(notifcationDataForUser);
+  }
   return result;
 };
 
