@@ -7,6 +7,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
+import Notification from '../notification/notification.model';
 
 const createMaterial = async (userId: string, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
@@ -94,6 +95,7 @@ const updateMaterial = async (
     runValidators: true,
   });
 
+  // for send notification ============
   if (
     userData.role == USER_ROLE.manager ||
     userData.role == USER_ROLE.superAdmin ||
@@ -106,12 +108,20 @@ const updateMaterial = async (
     };
     sendNotification(notifcationDataForUser);
   } else {
-    const notifcationDataForUser = {
+    const receivers = [
+      project.projectManager.toString(),
+      project.officeManager.toString(),
+      USER_ROLE.superAdmin,
+    ];
+    const notificationData = receivers.map((receiver) => ({
       title: `Material updated`,
-      message: `Material updated for project : ${project.name}`,
-      receiver: project.projectOwner.toString(),
-    };
-    sendNotification(notifcationDataForUser);
+      message: `Material updated by project owner for project : ${project.name}`,
+      receiver: receiver.toString(),
+    }));
+    await Notification.create(notificationData);
+    notificationData.forEach((data) => {
+      sendNotification(data);
+    });
   }
   return result;
 };
