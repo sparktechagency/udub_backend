@@ -122,6 +122,8 @@ const updateMaterial = async (
       title: `Material updated`,
       message: `Material updated by project owner for project : ${project.name}`,
       receiver: receiver.toString(),
+      type: ENUM_NOTIFICATION_TYPE.MATERIAL,
+      redirectId: material._id.toString(),
     }));
     await Notification.create(notificationData);
     notificationData.forEach((data) => {
