@@ -6,8 +6,12 @@ import { Project } from './project.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
+import Notification from '../notification/notification.model';
+import { getIO } from '../../socket/socketManager';
+import getUserNotificationCount from '../../helper/getUserNotificationCount';
 
 const createProject = async (payload: IProject) => {
+  const io = getIO();
   const managers = await User.find({
     _id: {
       $in: [
@@ -31,6 +35,28 @@ const createProject = async (payload: IProject) => {
   if (!existingManagerIds.has(payload.financeManager.toString())) {
     throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
   }
+
+  const receivers = [
+    payload.projectManager.toString(),
+    payload.financeManager.toString(),
+    payload.officeManager.toString(),
+  ];
+
+  const notificationData = receivers.map((receiver) => ({
+    title: 'New project assigned',
+    message: `You assigned a new project: ${payload.name}`,
+    receiver,
+  }));
+
+  await Notification.insertMany(notificationData);
+
+  const notificationCounts = await Promise.all(
+    receivers.map((receiver) => getUserNotificationCount(receiver)),
+  );
+
+  receivers.forEach((receiver, index) => {
+    io.to(receiver).emit('notification', notificationCounts[index]);
+  });
 
   const result = await Project.create(payload);
   return result;
