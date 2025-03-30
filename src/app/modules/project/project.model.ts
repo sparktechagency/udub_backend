@@ -19,6 +19,11 @@ const ProjectSchema = new Schema<IProject>(
       ref: 'User',
       required: true,
     },
+    projectOwner: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     projectImage: { type: String, default: '', required: true },
   },
   { timestamps: true },

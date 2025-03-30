@@ -6,9 +6,12 @@ import { Material } from './material.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
 import QueryBuilder from '../../builder/QueryBuilder';
+import sendNotification from '../../helper/sendNotification';
 
 const createMaterial = async (userId: string, payload: IMaterial) => {
-  const project = await Project.findOne({ _id: payload.project });
+  const project = await Project.findOne({ _id: payload.project }).select(
+    'name _id projectOwner',
+  );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -30,6 +33,16 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
     createdBy: userId,
     projectOwner: project.projectOwnerEmail,
   });
+
+  // send notification
+  const notificationDataForUser = {
+    title: 'New Meterial added',
+    message: `A new meterial added to project : ${project.name} `,
+    receiver: project.projectOwner.toString(),
+  };
+
+  sendNotification(notificationDataForUser);
+
   return result;
 };
 

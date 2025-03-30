@@ -1,6 +1,6 @@
 export interface INotification {
   title: string;
   message: string;
-  seen: boolean;
+  seen?: boolean;
   receiver: string;
 }

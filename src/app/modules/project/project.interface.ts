@@ -6,6 +6,7 @@ export interface IProject {
   title: string;
   startDate: Date;
   liveLink: string;
+  projectOwner: Types.ObjectId;
   projectManager: Types.ObjectId;
   officeManager: Types.ObjectId;
   financeManager: Types.ObjectId;

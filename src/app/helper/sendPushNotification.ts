@@ -11,7 +11,7 @@ interface INotificationPayload {
   data?: object; // Optional additional data to send with the notification
 }
 
-const sendNotification = async ({
+const sendPushNotification = async ({
   playerIds,
   message,
   heading = 'Notification', // Default heading
@@ -51,4 +51,4 @@ const sendNotification = async ({
   }
 };
 
-export default sendNotification;
+export default sendPushNotification;
