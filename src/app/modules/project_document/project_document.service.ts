@@ -4,12 +4,16 @@ import AppError from '../../error/appError';
 import { Project } from '../project/project.model';
 import { ProjectDocument } from './project_document.model';
 import { IProjectDocument } from './project_document.interface';
-import unlinkFile from '../../helper/unLinkFile';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
+import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 
-const uploadDocumentsForProject = async (userId: string, payload: any) => {
+const uploadDocumentsForProject = async (
+  userId: string,
+  projectId: string,
+  payload: any,
+) => {
   const project = await Project.findOne({ _id: payload.projectId }).select(
     'projectOwner name',
   );
@@ -17,22 +21,27 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
 
-  const documentData = payload.documentData;
+  // const documentData = payload.documentData;
 
-  if (!documentData || documentData.length !== payload.images.length) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Each docuemnt must have a corresponding title, description, and projectId',
-    );
-  }
+  // if (!documentData || documentData.length !== payload.images.length) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     'Each docuemnt must have a corresponding title, description, and projectId',
+  //   );
+  // }
 
-  const documentsData = payload.images.map((image: string, index: number) => ({
+  // const documentsData = payload.images.map((image: string, index: number) => ({
+  //   addedBy: userId,
+  //   projectId: documentData[index].projectId,
+  //   title: documentData[index].title || '',
+  //   description: documentData[index].description || '',
+  //   image_url: image,
+  // }));
+  const result = await ProjectDocument.insertMany({
+    ...payload,
+    projectId,
     addedBy: userId,
-    projectId: documentData[index].projectId,
-    title: documentData[index].title || '',
-    description: documentData[index].description || '',
-    image_url: image,
-  }));
+  });
 
   const notifcationDataForUser = {
     title: `Document added`,
@@ -43,7 +52,6 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
   };
   sendNotification(notifcationDataForUser);
 
-  const result = await ProjectDocument.insertMany(documentsData);
   return result;
 };
 
@@ -62,7 +70,11 @@ const updateDocument = async (
   });
   // TOOD: need to be change in store image another way
   if (payload.document_url) {
-    unlinkFile(document.document_url);
+    if (payload.document_url) {
+      const oldFileName = document.document_url.split('amazonaws.com/')[1];
+      console.log('oldfile name', oldFileName);
+      await deleteFileFromS3(oldFileName);
+    }
   }
   return result;
 };

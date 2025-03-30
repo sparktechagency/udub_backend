@@ -10,6 +10,7 @@ const uploadImagesForProject = catchAsync(async (req, res) => {
   }
   const result = await ProjectDocumentService.uploadDocumentsForProject(
     req.user.id,
+    req.params.projectId,
     req.body,
   );
   sendResponse(res, {
@@ -21,10 +22,10 @@ const uploadImagesForProject = catchAsync(async (req, res) => {
 });
 
 const updateDocument = catchAsync(async (req, res) => {
-  const { files } = req;
-  if (files && typeof files === 'object' && 'document' in files) {
-    req.body.document_url = files['document'][0].path;
-  }
+  // const { files } = req;
+  // if (files && typeof files === 'object' && 'document' in files) {
+  //   req.body.document_url = files['document'][0].path;
+  // }
   const result = await ProjectDocumentService.updateDocument(
     req.user.id,
     req.params.id,

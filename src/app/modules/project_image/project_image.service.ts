@@ -4,12 +4,16 @@ import AppError from '../../error/appError';
 import { ProjectImage } from './project_image.model';
 import { Project } from '../project/project.model';
 import { IProject_image } from './project_image.interface';
-import unlinkFile from '../../helper/unLinkFile';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
+import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 
-const uploadImageForProject = async (userId: string, payload: any) => {
+const uploadImageForProject = async (
+  userId: string,
+  projectId: string,
+  payload: any,
+) => {
   const project = await Project.findOne({ _id: payload.projectId }).select(
     'projectOwner name',
   );
@@ -17,23 +21,27 @@ const uploadImageForProject = async (userId: string, payload: any) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
 
-  const imageData = payload.imageData;
+  // const imageData = payload.imageData;
 
-  if (!imageData || imageData.length !== payload.images.length) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Each image must have a corresponding title, description, and projectId',
-    );
-  }
+  // if (!imageData || imageData.length !== payload.images.length) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     'Each image must have a corresponding title, description, and projectId',
+  //   );
+  // }
 
-  const imagesData = payload.images.map((image: string, index: number) => ({
+  // const imagesData = payload.images.map((image: string, index: number) => ({
+  //   addedBy: userId,
+  //   projectId: imageData[index].projectId,
+  //   title: imageData[index].title || '',
+  //   description: imageData[index].description || '',
+  //   image_url: image,
+  // }));
+  const result = await ProjectImage.insertMany({
+    ...payload,
     addedBy: userId,
-    projectId: imageData[index].projectId,
-    title: imageData[index].title || '',
-    description: imageData[index].description || '',
-    image_url: image,
-  }));
-
+    projectId,
+  });
   const notifcationDataForUser = {
     title: `Image added`,
     message: `Image added for project : ${project.name}`,
@@ -43,7 +51,6 @@ const uploadImageForProject = async (userId: string, payload: any) => {
   };
   sendNotification(notifcationDataForUser);
 
-  const result = await ProjectImage.insertMany(imagesData);
   return result;
 };
 
@@ -62,7 +69,9 @@ const updateImage = async (
   });
   // TOOD: need to be change in store image another way
   if (payload.image_url) {
-    unlinkFile(image.image_url);
+    const oldFileName = image.image_url.split('amazonaws.com/')[1];
+    console.log('oldfile name', oldFileName);
+    await deleteFileFromS3(oldFileName);
   }
   return result;
 };
