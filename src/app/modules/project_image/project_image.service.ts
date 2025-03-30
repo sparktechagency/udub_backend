@@ -6,9 +6,12 @@ import { Project } from '../project/project.model';
 import { IProject_image } from './project_image.interface';
 import unlinkFile from '../../helper/unLinkFile';
 import QueryBuilder from '../../builder/QueryBuilder';
+import sendNotification from '../../helper/sendNotification';
 
 const uploadImageForProject = async (userId: string, payload: any) => {
-  const project = await Project.exists({ _id: payload.projectId });
+  const project = await Project.findOne({ _id: payload.projectId }).select(
+    'projectOwner name',
+  );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -29,6 +32,13 @@ const uploadImageForProject = async (userId: string, payload: any) => {
     description: imageData[index].description || '',
     image_url: image,
   }));
+
+  const notifcationDataForUser = {
+    title: `Image added`,
+    message: `Image added for project : ${project.name}`,
+    receiver: project.projectOwner.toString(),
+  };
+  sendNotification(notifcationDataForUser);
 
   const result = await ProjectImage.insertMany(imagesData);
   return result;

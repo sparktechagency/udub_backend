@@ -6,9 +6,12 @@ import { ProjectDocument } from './project_document.model';
 import { IProjectDocument } from './project_document.interface';
 import unlinkFile from '../../helper/unLinkFile';
 import QueryBuilder from '../../builder/QueryBuilder';
+import sendNotification from '../../helper/sendNotification';
 
 const uploadDocumentsForProject = async (userId: string, payload: any) => {
-  const project = await Project.exists({ _id: payload.projectId });
+  const project = await Project.findOne({ _id: payload.projectId }).select(
+    'projectOwner name',
+  );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -29,6 +32,13 @@ const uploadDocumentsForProject = async (userId: string, payload: any) => {
     description: documentData[index].description || '',
     image_url: image,
   }));
+
+  const notifcationDataForUser = {
+    title: `Document added`,
+    message: `Document added for project : ${project.name}`,
+    receiver: project.projectOwner.toString(),
+  };
+  sendNotification(notifcationDataForUser);
 
   const result = await ProjectDocument.insertMany(documentsData);
   return result;
