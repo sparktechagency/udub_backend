@@ -30,25 +30,21 @@ const uploadDocumentsForProject = async (
   //   );
   // }
 
-  // const documentsData = payload.images.map((image: string, index: number) => ({
-  //   addedBy: userId,
-  //   projectId: documentData[index].projectId,
-  //   title: documentData[index].title || '',
-  //   description: documentData[index].description || '',
-  //   image_url: image,
-  // }));
-  const result = await ProjectDocument.insertMany({
-    ...payload,
-    projectId,
+  const documentsData = payload.map((document: any) => ({
     addedBy: userId,
-  });
+    projectId: projectId,
+    title: document?.title,
+    description: document?.description,
+    document_url: document?.docuemnt_url,
+  }));
+  const result = await ProjectDocument.insertMany(documentsData);
 
   const notifcationDataForUser = {
     title: `Document added`,
     message: `Document added for project : ${project.name}`,
     receiver: project.projectOwner.toString(),
     type: ENUM_NOTIFICATION_TYPE.PROJECT,
-    redirectId: payload.project.toString(),
+    redirectId: projectId.toString(),
   };
   sendNotification(notifcationDataForUser);
 

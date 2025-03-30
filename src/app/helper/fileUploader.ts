@@ -9,23 +9,23 @@ export const uploadFile = () => {
       let uploadPath = '';
 
       if (file.fieldname === 'profile_image') {
-        uploadPath = 'uploads/images/profile_image';
+        uploadPath = 'uploads/profile_image';
       } else if (file.fieldname === 'category_image') {
-        uploadPath = 'uploads/images/category';
+        uploadPath = 'uploads/category';
       } else if (file.fieldname === 'project_images') {
-        uploadPath = 'uploads/images/project_images';
+        uploadPath = 'uploads/project_images';
       } else if (file.fieldname === 'league_image') {
-        uploadPath = 'uploads/images/league_image';
+        uploadPath = 'uploads/league_image';
       } else if (file.fieldname === 'team_logo') {
-        uploadPath = 'uploads/images/team_logo';
+        uploadPath = 'uploads/team_logo';
       } else if (file.fieldname === 'team_bg_image') {
-        uploadPath = 'uploads/images/team_bg_image';
+        uploadPath = 'uploads/team_bg_image';
       } else if (file.fieldname === 'player_image') {
-        uploadPath = 'uploads/images/player_image';
+        uploadPath = 'uploads/player_image';
       } else if (file.fieldname === 'player_bg_image') {
-        uploadPath = 'uploads/images/player_bg_image';
+        uploadPath = 'uploads/player_bg_image';
       } else if (file.fieldname === 'reward_image') {
-        uploadPath = 'uploads/images/reward_image';
+        uploadPath = 'uploads/reward_image';
       } else {
         uploadPath = 'uploads';
       }

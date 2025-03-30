@@ -14,7 +14,8 @@ const uploadImageForProject = async (
   projectId: string,
   payload: any,
 ) => {
-  const project = await Project.findOne({ _id: payload.projectId }).select(
+  console.log('rpject url', payload);
+  const project = await Project.findOne({ _id: projectId }).select(
     'projectOwner name',
   );
   if (!project) {
@@ -30,24 +31,20 @@ const uploadImageForProject = async (
   //   );
   // }
 
-  // const imagesData = payload.images.map((image: string, index: number) => ({
-  //   addedBy: userId,
-  //   projectId: imageData[index].projectId,
-  //   title: imageData[index].title || '',
-  //   description: imageData[index].description || '',
-  //   image_url: image,
-  // }));
-  const result = await ProjectImage.insertMany({
-    ...payload,
+  const imagesData = payload.map((image: any) => ({
     addedBy: userId,
-    projectId,
-  });
+    projectId: projectId,
+    title: image.title,
+    description: image.description,
+    image_url: image.image_url,
+  }));
+  const result = await ProjectImage.insertMany(imagesData);
   const notifcationDataForUser = {
     title: `Image added`,
     message: `Image added for project : ${project.name}`,
-    receiver: project.projectOwner.toString(),
+    receiver: project.projectOwner?.toString(),
     type: ENUM_NOTIFICATION_TYPE.PROJECT,
-    redirectId: payload.project.toString(),
+    redirectId: projectId.toString(),
   };
   sendNotification(notifcationDataForUser);
 

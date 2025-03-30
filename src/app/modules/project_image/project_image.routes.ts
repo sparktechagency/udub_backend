@@ -9,26 +9,11 @@ const router = express.Router();
 router.post(
   '/upload-project-image/:projectId',
   auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
-  // uploadFile(),
-  // (req, res, next) => {
-  //   if (req.body.data) {
-  //     req.body = JSON.parse(req.body.data);
-  //   }
-  //   next();
-  // },
-  // validateRequest(ProjectImageValidations.projectImageValidationSchema),
   Project_imageController.uploadImagesForProject,
 );
 router.patch(
   '/update-project-image/:id',
   auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
-  // uploadFile(),
-  // (req, res, next) => {
-  //   if (req.body.data) {
-  //     req.body = JSON.parse(req.body.data);
-  //   }
-  //   next();
-  // },
   Project_imageController.updateImage,
 );
 

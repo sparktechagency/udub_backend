@@ -89,13 +89,15 @@ export const generatePresignedUrl = async ({
 
   let folder = '';
   if (fileCategory === 'profile_image') {
-    folder = 'profile_images/';
-  } else if (fileCategory === 'product_image') {
-    folder = 'product_images/';
+    folder = 'uploads/profile_images/';
+  } else if (fileCategory === 'project_image') {
+    folder = 'uploads/project_image/';
   } else if (fileCategory === 'video') {
-    folder = 'videos/';
-  } else if (fileCategory === 'pdf') {
-    folder = 'documents/';
+    folder = 'uploads/videos/';
+  } else if (fileCategory === 'project_document') {
+    folder = 'uploads/project_document/';
+  } else if (fileCategory === 'material_image') {
+    folder = 'uploads/project_material_image/';
   }
 
   const fileName = `${folder}${timestamp}-${Math.random()
