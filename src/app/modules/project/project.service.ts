@@ -19,6 +19,7 @@ const createProject = async (payload: IProject) => {
         payload.projectManager,
         payload.officeManager,
         payload.financeManager,
+        payload.projectOwner,
       ],
     },
   }).select('_id');
@@ -35,6 +36,9 @@ const createProject = async (payload: IProject) => {
   }
   if (!existingManagerIds.has(payload.financeManager.toString())) {
     throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
+  }
+  if (!existingManagerIds.has(payload.projectOwner.toString())) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project owner not found');
   }
 
   const result = await Project.create(payload);
@@ -97,7 +101,7 @@ const getMyProject = async (
   let projectQuery;
   if (userData?.role == USER_ROLE.user) {
     projectQuery = new QueryBuilder(
-      Project.find({ projectOwnerEmail: userData.email }),
+      Project.find({ projectOwner: userData.id }),
       query,
     )
       .search(['name', 'title'])
@@ -151,7 +155,19 @@ const getMyProject = async (
 
 // get singel projet
 const getSingleProject = async (id: string) => {
-  const result = await Project.findById(id);
+  const result = await Project.findById(id)
+    .populate({
+      path: 'projectManager',
+      select: 'name email profile_image phone address',
+    })
+    .populate({
+      path: 'officeManager',
+      select: 'name email profile_image phone address',
+    })
+    .populate({
+      path: 'financeManager',
+      select: 'name email profile_image phone address',
+    });
   return result;
 };
 

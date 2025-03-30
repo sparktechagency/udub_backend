@@ -13,7 +13,7 @@ export const uploadFile = () => {
       } else if (file.fieldname === 'category_image') {
         uploadPath = 'uploads/category';
       } else if (file.fieldname === 'project_images') {
-        uploadPath = 'uploads/project_images';
+        uploadPath = 'uploads/project_image';
       } else if (file.fieldname === 'league_image') {
         uploadPath = 'uploads/league_image';
       } else if (file.fieldname === 'team_logo') {

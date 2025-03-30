@@ -64,6 +64,16 @@ const deleteProject = catchAsync(async (req, res) => {
   });
 });
 const updateProject = catchAsync(async (req, res) => {
+  const { files } = req;
+  let project_image_path;
+  if (files && typeof files === 'object' && 'project_images' in files) {
+    project_image_path = files['project_images'][0].path;
+  }
+  // const imageName = req.user.id;
+  if (project_image_path) {
+    const project_image_url = await uploadToS3FromServer(project_image_path);
+    req.body.projectImage = project_image_url as string;
+  }
   const result = await projectServices.updateProject(req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
