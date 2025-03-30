@@ -44,6 +44,7 @@ router.get(
     USER_ROLE.financeManager,
     USER_ROLE.user,
   ),
+  ProjectDocumentController.getProjectDocuments,
 );
 router.get(
   '/get-single-document/:id',
@@ -54,6 +55,7 @@ router.get(
     USER_ROLE.financeManager,
     USER_ROLE.user,
   ),
+  ProjectDocumentController.getSingleDocument,
 );
 
 export const projectDocumentRoutes = router;

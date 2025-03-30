@@ -8,6 +8,7 @@ import { USER_ROLE } from '../user/user.constant';
 import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import Notification from '../notification/notification.model';
+import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 
 const createMaterial = async (userId: string, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
@@ -40,6 +41,8 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
     title: 'New Meterial added',
     message: `A new meterial added to project : ${project.name} `,
     receiver: project.projectOwner.toString(),
+    type: ENUM_NOTIFICATION_TYPE.MATERIAL,
+    redirectId: result._id.toString(),
   };
 
   sendNotification(notificationDataForUser);
@@ -105,6 +108,8 @@ const updateMaterial = async (
       title: `Material updated`,
       message: `Material updated for project : ${project.name}`,
       receiver: project.projectOwner.toString(),
+      type: ENUM_NOTIFICATION_TYPE.MATERIAL,
+      redirectId: material._id.toString(),
     };
     sendNotification(notifcationDataForUser);
   } else {

@@ -43,6 +43,7 @@ router.get(
     USER_ROLE.financeManager,
     USER_ROLE.user,
   ),
+  Project_imageController.getProjectImages,
 );
 router.get(
   '/get-single-image/:id',
@@ -53,6 +54,7 @@ router.get(
     USER_ROLE.financeManager,
     USER_ROLE.user,
   ),
+  Project_imageController.getSingleImage,
 );
 
 export const project_imageRoutes = router;
