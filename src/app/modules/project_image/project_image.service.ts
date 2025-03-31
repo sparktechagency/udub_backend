@@ -14,7 +14,6 @@ const uploadImageForProject = async (
   projectId: string,
   payload: any,
 ) => {
-  console.log('rpject url', payload);
   const project = await Project.findOne({ _id: projectId }).select(
     'projectOwner name',
   );
@@ -30,7 +29,6 @@ const uploadImageForProject = async (
   //     'Each image must have a corresponding title, description, and projectId',
   //   );
   // }
-
   const imagesData = payload.map((image: any) => ({
     addedBy: userId,
     projectId: projectId,

@@ -167,6 +167,10 @@ const getSingleProject = async (id: string) => {
     .populate({
       path: 'financeManager',
       select: 'name email profile_image phone address',
+    })
+    .populate({
+      path: 'projectOwner',
+      select: 'name email profile_image phone address',
     });
   return result;
 };
