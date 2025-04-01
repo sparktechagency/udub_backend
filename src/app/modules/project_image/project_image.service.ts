@@ -58,10 +58,14 @@ const updateImage = async (
   if (!image) {
     throw new AppError(httpStatus.NOT_FOUND, 'Image not found');
   }
-  const result = await ProjectImage.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
-  });
+  const result = await ProjectImage.findByIdAndUpdate(
+    id,
+    { ...payload, addedBy: updateBy },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
   // TOOD: need to be change in store image another way
   if (payload.image_url) {
     const oldFileName = image.image_url.split('amazonaws.com/')[1];

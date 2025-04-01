@@ -60,10 +60,14 @@ const updateDocument = async (
   if (!document) {
     throw new AppError(httpStatus.NOT_FOUND, 'Document not found');
   }
-  const result = await ProjectDocument.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
-  });
+  const result = await ProjectDocument.findByIdAndUpdate(
+    id,
+    { ...payload, addedBy: updateBy },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
   // TOOD: need to be change in store image another way
   if (payload.document_url) {
     if (payload.document_url) {
