@@ -12,7 +12,7 @@ import Notification from '../notification/notification.model';
 
 const addPayment = async (userId: string, payload: IPayment) => {
   const project = await Project.findOne({ _id: payload.project }).select(
-    'name projectOwner',
+    'name projectOwner _id financeManager',
   );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
@@ -26,11 +26,9 @@ const addPayment = async (userId: string, payload: IPayment) => {
 
   const result = await Payment.create({
     ...payload,
-    project: payload.project,
     createdBy: userId,
-    projectOwner: project.projectOwnerEmail,
+    projectOwner: project.projectOwner,
   });
-
   const notifcationDataForUser = {
     title: `Payment info added`,
     message: `Payment info  added for project : ${project.name}`,

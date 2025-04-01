@@ -10,6 +10,7 @@ import { projectDocumentRoutes } from '../modules/project_document/project_docum
 import { materialRoutes } from '../modules/material/material.routes';
 import { conversationRoutes } from '../modules/conversation/conversation.routes';
 import { messageRoutes } from '../modules/message/message.routes';
+import { paymentRoutes } from '../modules/payment/payment.routes';
 
 const router = Router();
 
@@ -53,6 +54,10 @@ const moduleRoutes = [
   {
     path: '/message',
     router: messageRoutes,
+  },
+  {
+    path: '/payment',
+    router: paymentRoutes,
   },
 ];
 

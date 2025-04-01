@@ -16,6 +16,7 @@ const PaymentSchema = new Schema<IPayment>(
     project: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
     amount: { type: Number },
     status: { type: String },
+    paymentMilestoneName: { type: String, required: true },
   },
   { timestamps: true },
 );

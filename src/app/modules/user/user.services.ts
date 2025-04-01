@@ -36,7 +36,7 @@ const updateUserProfile = async (id: string, payload: Partial<TUser>) => {
 };
 
 const getMyProfile = async (userData: JwtPayload) => {
-  const result = await User.findOne({ email: userData.email });
+  const result = await User.findById(userData.id);
   return result;
 };
 
@@ -48,7 +48,11 @@ const deleteUserAccount = async (user: JwtPayload, password: string) => {
   if (!(await User.isPasswordMatched(password, userData?.password))) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not match');
   }
-  await User.findByIdAndDelete(user.id);
+  await User.findByIdAndUpdate(
+    user.id,
+    { isDeleted: true },
+    { new: true, runValidators: true },
+  );
 
   return null;
 };
@@ -73,7 +77,12 @@ const deleteAccount = async (id: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
-  const result = await User.findByIdAndDelete(id);
+  // const result = await User.findByIdAndDelete(id);
+  const result = await User.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true, runValidators: true },
+  );
   return result;
 };
 

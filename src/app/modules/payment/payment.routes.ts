@@ -45,6 +45,7 @@ router.get(
     USER_ROLE.user,
     USER_ROLE.financeManager,
   ),
+  PaymentController.getAllPayments,
 );
 router.get(
   '/get-single-payment/:id',
@@ -55,5 +56,6 @@ router.get(
     USER_ROLE.user,
     USER_ROLE.financeManager,
   ),
+  PaymentController.getSinglePayment,
 );
 export const paymentRoutes = router;
