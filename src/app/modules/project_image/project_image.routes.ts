@@ -8,12 +8,22 @@ const router = express.Router();
 
 router.post(
   '/upload-project-image/:projectId',
-  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+  ),
   Project_imageController.uploadImagesForProject,
 );
 router.patch(
   '/update-project-image/:id',
-  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+  ),
   Project_imageController.updateImage,
 );
 

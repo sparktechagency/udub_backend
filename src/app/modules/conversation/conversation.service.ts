@@ -8,7 +8,6 @@ const getConversation = async (
   profileId: string,
   query: Record<string, unknown>,
 ) => {
-  console.log('fprile', profileId);
   const searchTerm = query.searchTerm as string;
   let userSearchFilter = {};
 
@@ -54,8 +53,6 @@ const getConversation = async (
       const otherUser = conv.participants.find(
         (participant: any) => participant._id.toString() != profileId,
       );
-      console.log('other user', otherUser);
-
       return {
         _id: conv?._id,
         userData: {
