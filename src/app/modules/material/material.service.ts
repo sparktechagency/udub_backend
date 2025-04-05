@@ -10,10 +10,11 @@ import sendNotification from '../../helper/sendNotification';
 import Notification from '../notification/notification.model';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 
-const createMaterial = async (userId: string, payload: IMaterial) => {
+const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
-    'name _id projectOwner',
+    'name _id projectOwner projectManager officeManager',
   );
+  console.log('proejct', project);
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -21,8 +22,9 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
   }
   if (
-    project.projectManager.toString() != userId &&
-    !project.officeManager.toString()
+    project.projectManager.toString() != userData?.id &&
+    !project.officeManager.toString() &&
+    userData?.role != USER_ROLE.superAdmin
   ) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
@@ -32,8 +34,8 @@ const createMaterial = async (userId: string, payload: IMaterial) => {
   const result = await Material.create({
     ...payload,
     project: payload.project,
-    createdBy: userId,
-    projectOwner: project.projectOwnerEmail,
+    createdBy: userData?.id,
+    projectOwner: project.projectOwner,
   });
 
   // send notification
