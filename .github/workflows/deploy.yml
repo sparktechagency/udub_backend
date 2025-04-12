@@ -24,7 +24,8 @@ jobs:
       - name: Prepare Deployment Files
         run: |
           # Archive necessary files into a tarball, excluding ecosystem.config.js and .env if not needed
-          tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js
+          tar -czf app.tar.gz dist package.json package-lock.json
+          # If you need to include ecosystem.config.js or .env, make sure they are present in the repository
 
   deploy:
     runs-on: ubuntu-latest
