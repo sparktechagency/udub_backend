@@ -23,8 +23,8 @@ jobs:
         run: npm run build # Run tsc to compile the TypeScript code
       - name: Prepare Deployment Files
         run: |
-          # Archive necessary files into a tarball
-          tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js .env
+          # Archive necessary files into a tarball, excluding ecosystem.config.js and .env if not needed
+          tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,23 +47,23 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           ENV_VARS_JSON: ${{ secrets.ENV_VARS_JSON }}
         run: |
-          # Copy files to EC2
+          # Copy the tarball to EC2
           scp app.tar.gz $EC2_USER@$EC2_HOST:/home/application/backend/app.tar.gz
 
-          # SSH into EC2 and perform deployment
+          # SSH into EC2 to perform the deployment
           ssh $EC2_USER@$EC2_HOST << 'EOF'
-            # Unarchive the app.tar.gz file and deploy the app
+            # Clean up and create the necessary directory on EC2
             rm -rf /home/application/backend && mkdir -p /home/application/backend
             tar -xzf /home/application/backend/app.tar.gz -C /home/application/backend
             cd /home/application/backend
 
-            # Decode and set environment variables from the GitHub Secrets
+            # Decode and set environment variables from GitHub Secrets
             echo "$ENV_VARS_JSON" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' >> .env
 
             # Install production dependencies
             npm ci --only=production
 
-            # Start or restart the application using PM2
+            # Manage the application with PM2 (delete old process and start the new one)
             pm2 delete nodejs-backend || true
             pm2 start dist/server.js --name nodejs-backend
           EOF
