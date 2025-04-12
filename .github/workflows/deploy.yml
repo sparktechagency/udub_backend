@@ -1,0 +1,65 @@
+name: Deploy Node.js on EC2
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - name: Install Dependencies
+        run: npm ci --ignore-scripts
+      - name: Build Project
+        run: npm run build
+      - name: Archive Production Build
+        run: tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nodejs-build
+          path: app.tar.gz
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: nodejs-build
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          ENV_VARS_JSON: ${{ secrets.ENV_VARS_JSON }}
+        run: |
+
+          # Decode the environment variables and export them
+          echo "$ENV_VARS_JSON" | jq -r 'to_entries | .[] | "export \(.key)=\(.value)"' >> /home/application/backend/.env
+          # Now, deploy the app
+          scp app.tar.gz $EC2_USER@$EC2_HOST:/home/application/backend/app.tar.gz
+          ssh $EC2_USER@$EC2_HOST << 'EOF'
+            rm -rf /home/application/backend && mkdir -p /home/application/backend
+            tar -xzf /home/application/backend/app.tar.gz -C /home/application/backend
+            cd /home/application/backend
+            npm ci --only=production
+            pm2 delete nodejs-backend || true
+            pm2 start dist/server.js --name nodejs-backend
+          EOF
