@@ -62,6 +62,7 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 Host URL or IP address
           EC2_USER: ${{ secrets.EC2_USER }} # EC2 SSH username (e.g., ubuntu)
+          ENV_VARS_JSON: ${{ secrets.ENV_VARS_JSON }} # Pass the environment variables JSON
         run: |
           # Create deployment directory on EC2
           ssh $EC2_USER@$EC2_HOST "mkdir -p ~/app"
@@ -75,6 +76,9 @@ jobs:
 
           # Install production dependencies on EC2
           ssh $EC2_USER@$EC2_HOST "cd ~/app && npm install --frozen-lockfile --production"
+
+          # Set the environment variables (using the ENV_VARS_JSON secret)
+          ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/app/.env"
 
           # Stop the existing PM2 process if it exists
           ssh $EC2_USER@$EC2_HOST "pm2 delete nodejs-app || true"  # Ensures no errors if the process doesn't exist
