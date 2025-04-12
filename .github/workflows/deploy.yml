@@ -1,4 +1,4 @@
-name: Deploy Node.js on EC2
+name: Deploy Node.js with TypeScript on EC2
 
 on:
   push:
@@ -17,8 +17,10 @@ jobs:
           node-version: '20.x'
       - name: Install Dependencies
         run: npm ci --ignore-scripts
+      - name: Install TypeScript Compiler
+        run: npm install -g typescript # Install TypeScript globally
       - name: Build Project
-        run: npm run build
+        run: npm run build # Run tsc to compile the TypeScript code
       - name: Archive Production Build
         run: tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js
       - name: Upload Build Artifact
