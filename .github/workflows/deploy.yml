@@ -24,7 +24,7 @@ jobs:
       - name: Archive Production Build
         run: tar -czf app.tar.gz dist package.json package-lock.json ecosystem.config.js
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: nodejs-build
           path: app.tar.gz
