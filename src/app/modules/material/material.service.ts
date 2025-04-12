@@ -38,7 +38,7 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
     projectOwner: project.projectOwner,
   });
 
-  // send notification
+  // send notification---------------
   const notificationDataForUser = {
     title: 'New Meterial added',
     message: `A new meterial added to project : ${project.name} `,

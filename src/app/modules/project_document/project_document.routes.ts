@@ -7,7 +7,12 @@ const router = express.Router();
 
 router.post(
   '/upload-project-documents/:projectId',
-  auth(USER_ROLE.user),
+  auth(
+    USER_ROLE.user,
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+  ),
   // uploadFile(),
   // (req, res, next) => {
   //   if (req.body.data) {
@@ -21,7 +26,12 @@ router.post(
 
 router.patch(
   '/update-project-document/:id',
-  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+  ),
   // uploadFile(),
   // (req, res, next) => {
   //   if (req.body.data) {

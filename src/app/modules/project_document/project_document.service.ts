@@ -14,7 +14,7 @@ const uploadDocumentsForProject = async (
   projectId: string,
   payload: any,
 ) => {
-  const project = await Project.findOne({ _id: payload.projectId }).select(
+  const project = await Project.findOne({ _id: projectId }).select(
     'projectOwner name',
   );
   if (!project) {
@@ -35,8 +35,9 @@ const uploadDocumentsForProject = async (
     projectId: projectId,
     title: document?.title,
     description: document?.description,
-    document_url: document?.docuemnt_url,
+    document_url: document?.document_url,
   }));
+
   const result = await ProjectDocument.insertMany(documentsData);
 
   const notifcationDataForUser = {

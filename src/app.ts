@@ -10,7 +10,6 @@ import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './app/routes';
 import notFound from './app/middlewares/notFound';
 const app: Application = express();
-import multer from 'multer';
 import sendContactUsEmail from './app/helper/sendContactUsEmail';
 import getSheet from './getSheet';
 import getSpecificSheet from './getSpecificSheet';
@@ -20,7 +19,7 @@ import {
 } from './app/helper/presignedUrlGenerator';
 import AppError from './app/error/appError';
 import httpStatus from 'http-status';
-const upload = multer({ dest: 'uploads/' });
+
 // parser
 app.use(express.json());
 app.use(cookieParser());
