@@ -1,3 +1,91 @@
+# name: Deploy Node.js with TypeScript on EC2
+
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#   pull_request:
+#     branches:
+#       - 'main'
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v3 # Checkout the repository code
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '20.15' # Use the specified Node.js version
+
+#       - name: Install Dependencies
+#         run: npm install --frozen-lockfile # Install all dependencies from package-lock.json
+
+#       - name: Install TypeScript Compiler
+#         run: npm install -g typescript # Install TypeScript globally
+
+#       - name: Build Project
+#         run: npm run build # Compile TypeScript code using tsc
+
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build # This job depends on the successful completion of the 'build' job
+
+#     steps:
+#       - uses: actions/checkout@v3 # Checkout the repository code again for deployment
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '20.15' # Same Node.js version as the build job
+
+#       - name: Install Dependencies
+#         run: npm install --frozen-lockfile # Install all dependencies
+
+#       - name: Build Project
+#         run: npm run build # Ensure the project is built before deployment
+
+#       # Configure SSH access to the EC2 instance
+#       - name: Configure SSH
+#         env:
+#           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }} # SSH key for access
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa  # Set the correct permissions for the private key
+#           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts  # Add the EC2 host to known hosts
+
+#       # Deploy the application to EC2 using `rsync`
+#       - name: Deploy to EC2
+#         env:
+#           EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 Host URL or IP address
+#           EC2_USER: ${{ secrets.EC2_USER }} # EC2 SSH username (e.g., ubuntu)
+#           ENV_VARS_JSON: ${{ secrets.ENV_VARS_JSON }} # Pass the environment variables JSON
+#         run: |
+#           # Create deployment directory on EC2
+#           ssh $EC2_USER@$EC2_HOST "mkdir -p ~/app"
+
+#           # Copy the entire project to EC2 using `rsync`
+#           rsync -avz \
+#             --exclude='.git' \
+#             --exclude='node_modules' \
+#             --exclude='.github' \
+#             . $EC2_USER@$EC2_HOST:~/app/  # Ensure only relevant files are copied
+
+#           # Install production dependencies on EC2
+#           ssh $EC2_USER@$EC2_HOST "cd ~/app && npm install --frozen-lockfile --production"
+
+#           # Set the environment variables (using the ENV_VARS_JSON secret)
+#           ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/app/.env"
+
+#           # Stop the existing PM2 process if it exists
+#           ssh $EC2_USER@$EC2_HOST "pm2 delete nodejs-app || true"  # Ensures no errors if the process doesn't exist
+
+#           # Start the application with PM2
+#           ssh $EC2_USER@$EC2_HOST "cd ~/app && pm2 start dist/server.js --name nodejs-app"
+
 name: Deploy Node.js with TypeScript on EC2
 
 on:
@@ -57,31 +145,77 @@ jobs:
           chmod 600 ~/.ssh/id_rsa  # Set the correct permissions for the private key
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts  # Add the EC2 host to known hosts
 
-      # Deploy the application to EC2 using `rsync`
-      - name: Deploy to EC2
+      # Deploy the backend application to EC2 (this is where we create the 'backend' folder)
+      - name: Deploy Backend to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 Host URL or IP address
           EC2_USER: ${{ secrets.EC2_USER }} # EC2 SSH username (e.g., ubuntu)
           ENV_VARS_JSON: ${{ secrets.ENV_VARS_JSON }} # Pass the environment variables JSON
         run: |
-          # Create deployment directory on EC2
-          ssh $EC2_USER@$EC2_HOST "mkdir -p ~/app"
+          # Create application directories on EC2 if they don't exist
+          ssh $EC2_USER@$EC2_HOST "mkdir -p ~/applications/backend"
 
-          # Copy the entire project to EC2 using `rsync`
+          # Copy the backend project to EC2 using `rsync`
           rsync -avz \
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='.github' \
-            . $EC2_USER@$EC2_HOST:~/app/  # Ensure only relevant files are copied
+            . $EC2_USER@$EC2_HOST:~/applications/backend/  # Deploy only the backend files
 
-          # Install production dependencies on EC2
-          ssh $EC2_USER@$EC2_HOST "cd ~/app && npm install --frozen-lockfile --production"
+          # Install production dependencies on EC2 for the backend
+          ssh $EC2_USER@$EC2_HOST "cd ~/applications/backend && npm install --frozen-lockfile --production"
 
           # Set the environment variables (using the ENV_VARS_JSON secret)
-          ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/app/.env"
+          ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/applications/backend/.env"
 
           # Stop the existing PM2 process if it exists
           ssh $EC2_USER@$EC2_HOST "pm2 delete nodejs-app || true"  # Ensures no errors if the process doesn't exist
 
-          # Start the application with PM2
-          ssh $EC2_USER@$EC2_HOST "cd ~/app && pm2 start dist/server.js --name nodejs-app"
+          # Start the backend application with PM2
+          ssh $EC2_USER@$EC2_HOST "cd ~/applications/backend && pm2 start dist/server.js --name nodejs-app"
+
+      # Deploy the frontend (website) application to EC2 (this is where we create the 'website' folder)
+      - name: Deploy Website to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 Host URL or IP address
+          EC2_USER: ${{ secrets.EC2_USER }} # EC2 SSH username (e.g., ubuntu)
+        run: |
+          # Create the 'website' directory on EC2 if it doesn't exist
+          ssh $EC2_USER@$EC2_HOST "mkdir -p ~/applications/website"
+
+          # Copy the website project to EC2 using `rsync`
+          rsync -avz \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.github' \
+            . $EC2_USER@$EC2_HOST:~/applications/website/  # Deploy only the website files
+
+          # Install production dependencies on EC2 for the website
+          ssh $EC2_USER@$EC2_HOST "cd ~/applications/website && npm install --frozen-lockfile --production"
+
+          # (Optional) Build the frontend if necessary (for example, if it's a React app)
+          # ssh $EC2_USER@$EC2_HOST "cd ~/applications/website && npm run build"
+
+          # Optionally, you can also serve the frontend through a process manager like PM2 or directly using a web server (e.g., Nginx)
+
+      # (Optional) Deploy Dashboard (if you have another part of the application)
+      - name: Deploy Dashboard to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 Host URL or IP address
+          EC2_USER: ${{ secrets.EC2_USER }} # EC2 SSH username (e.g., ubuntu)
+        run: |
+          # Create the 'dashboard' directory on EC2 if it doesn't exist
+          ssh $EC2_USER@$EC2_HOST "mkdir -p ~/applications/dashboard"
+
+          # Copy the dashboard project to EC2 using `rsync`
+          rsync -avz \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.github' \
+            . $EC2_USER@$EC2_HOST:~/applications/dashboard/  # Deploy only the dashboard files
+
+          # Install production dependencies on EC2 for the dashboard
+          ssh $EC2_USER@$EC2_HOST "cd ~/applications/dashboard && npm install --frozen-lockfile --production"
+
+          # (Optional) Build the dashboard if necessary
+          # ssh $EC2_USER@$EC2_HOST "cd ~/applications/dashboard && npm run build"
