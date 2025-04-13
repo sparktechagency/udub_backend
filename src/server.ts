@@ -30,7 +30,7 @@ async function main() {
 
     initializeSocket(myServer);
 
-    // Global unhandled rejection handler
+    // Global unhandled rejection handler---------
     process.on('unhandledRejection', (error) => {
       logger.error('Unhandled Rejection:', error);
       if (myServer) {
