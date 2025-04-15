@@ -9,18 +9,22 @@ const ProjectSchema = new Schema<IProject>(
     startDate: { type: Date, required: true },
     liveLink: { type: String, required: false },
     projectManager: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: 'User',
       required: true,
     },
-    officeManager: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    officeManager: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+      required: true,
+    },
     financeManager: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: 'User',
       required: true,
     },
     projectOwner: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: 'User',
       required: true,
     },
