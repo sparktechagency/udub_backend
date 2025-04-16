@@ -44,10 +44,10 @@ const createProject = async (payload: IProject) => {
   const result = await Project.create(payload);
 
   const receivers = [
-    payload.projectManager.toString(),
-    payload.financeManager.toString(),
-    payload.officeManager.toString(),
-    payload.projectOwner.toString(),
+    ...payload.projectManager,
+    ...payload.financeManager,
+    ...payload.officeManager,
+    ...payload.projectOwner,
   ];
 
   const notificationData = receivers.map((receiver) => ({
@@ -61,11 +61,11 @@ const createProject = async (payload: IProject) => {
   await Notification.insertMany(notificationData);
 
   const notificationCounts = await Promise.all(
-    receivers.map((receiver) => getUserNotificationCount(receiver)),
+    receivers.map((receiver) => getUserNotificationCount(receiver.toString())),
   );
 
   receivers.forEach((receiver, index) => {
-    io.to(receiver).emit('notification', notificationCounts[index]);
+    io.to(receiver.toString()).emit('notification', notificationCounts[index]);
   });
   return result;
 };
