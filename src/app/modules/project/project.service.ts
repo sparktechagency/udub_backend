@@ -13,33 +13,33 @@ import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
-  const managers = await User.find({
-    _id: {
-      $in: [
-        payload.projectManager,
-        payload.officeManager,
-        payload.financeManager,
-        payload.projectOwner,
-      ],
-    },
-  }).select('_id');
+  // const managers = await User.find({
+  //   _id: {
+  //     $in: [
+  //       payload.projectManager,
+  //       payload.officeManager,
+  //       payload.financeManager,
+  //       payload.projectOwner,
+  //     ],
+  //   },
+  // }).select('_id');
 
-  const existingManagerIds = new Set(
-    managers.map((manager) => manager._id.toString()),
-  );
+  // const existingManagerIds = new Set(
+  //   managers.map((manager) => manager._id.toString()),
+  // );
 
-  if (!existingManagerIds.has(payload.projectManager.toString())) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Project manager not found');
-  }
-  if (!existingManagerIds.has(payload.officeManager.toString())) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Office manager not found');
-  }
-  if (!existingManagerIds.has(payload.financeManager.toString())) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
-  }
-  if (!existingManagerIds.has(payload.projectOwner.toString())) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Project owner not found');
-  }
+  // if (!existingManagerIds.has(payload.projectManager.toString())) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Project manager not found');
+  // }
+  // if (!existingManagerIds.has(payload.officeManager.toString())) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Office manager not found');
+  // }
+  // if (!existingManagerIds.has(payload.financeManager.toString())) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
+  // }
+  // if (!existingManagerIds.has(payload.projectOwner.toString())) {
+  //   throw new AppError(httpStatus.NOT_FOUND, 'Project owner not found');
+  // }
 
   const result = await Project.create(payload);
 
@@ -75,9 +75,22 @@ const createProject = async (payload: IProject) => {
 const getAllProject = async (query: Record<string, unknown>) => {
   const projectQuery = new QueryBuilder(
     Project.find()
-      .populate({ path: 'projectManager' })
-      .populate({ path: 'officeManager' })
-      .populate({ path: 'financeManager' }),
+      .populate({
+        path: 'projectManager',
+        select: 'name email phone profile_image',
+      })
+      .populate({
+        path: 'officeManager',
+        select: 'name email phone profile_image',
+      })
+      .populate({
+        path: 'financeManager',
+        select: 'name email phone profile_image',
+      })
+      .populate({
+        path: 'projectOwner',
+        select: 'name email phone profile_image',
+      }),
     query,
   )
     .search(['name', 'title'])
