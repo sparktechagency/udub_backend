@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PipelineStage, Types } from 'mongoose';
-import QueryBuilder from '../../builder/QueryBuilder';
+import { Types } from 'mongoose';
+
 import calculatePagination from '../../helper/paginationHelper';
 import pick from '../../helper/pick';
-import Message from '../message/message.model';
-import { User } from '../user/user.model';
+
 import Conversation from './conversation.model';
 
 // const getConversation = async (
@@ -115,7 +114,7 @@ const getConversation = async (
     });
   }
 
-  const pipeline = [
+  const pipeline: any[] = [
     {
       $match: {
         participants: new Types.ObjectId(profileId),
