@@ -222,7 +222,7 @@ const getConversation = async (
       $project: {
         _id: 1,
         type: '$type',
-        user: {
+        userData: {
           _id: '$otherUser._id',
           email: '$otherUser.email',
           name: '$otherUser.name',
