@@ -10,38 +10,33 @@ import Notification from '../notification/notification.model';
 import { getIO } from '../../socket/socketManager';
 import getUserNotificationCount from '../../helper/getUserNotificationCount';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
+import Conversation from '../conversation/conversation.model';
+import { CONVERSATION_TYPE } from '../conversation/conversation.enum';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
-  // const managers = await User.find({
-  //   _id: {
-  //     $in: [
-  //       payload.projectManager,
-  //       payload.officeManager,
-  //       payload.financeManager,
-  //       payload.projectOwner,
-  //     ],
-  //   },
-  // }).select('_id');
-
-  // const existingManagerIds = new Set(
-  //   managers.map((manager) => manager._id.toString()),
-  // );
-
-  // if (!existingManagerIds.has(payload.projectManager.toString())) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Project manager not found');
-  // }
-  // if (!existingManagerIds.has(payload.officeManager.toString())) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Office manager not found');
-  // }
-  // if (!existingManagerIds.has(payload.financeManager.toString())) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
-  // }
-  // if (!existingManagerIds.has(payload.projectOwner.toString())) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Project owner not found');
-  // }
 
   const result = await Project.create(payload);
+
+  const conversationData = [
+    {
+      participants: [...payload.projectManager, ...payload.projectOwner],
+      projectId: result._id,
+      type: CONVERSATION_TYPE.MANAGER_GROUP,
+    },
+    {
+      participants: [...payload.officeManager, ...payload.projectOwner],
+      projectId: result._id,
+      type: CONVERSATION_TYPE.OFFICE_MANAGER_GROUP,
+    },
+    {
+      participants: [...payload.financeManager, ...payload.projectOwner],
+      projectId: result._id,
+      type: CONVERSATION_TYPE.FINANCE_GROUP,
+    },
+  ];
+
+  await Conversation.insertMany(conversationData);
 
   const receivers = [
     ...payload.projectManager,
