@@ -11,6 +11,10 @@ const conversationSchema = new Schema<IConversation>(
       type: Schema.Types.ObjectId,
       ref: 'Message',
     },
+    projectId: {
+      type: Schema.Types.ObjectId,
+      default: null,
+    },
   },
   {
     timestamps: true,
