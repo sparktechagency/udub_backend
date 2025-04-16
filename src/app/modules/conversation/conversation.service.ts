@@ -226,9 +226,8 @@ const getConversation = async (
         user: {
           _id: '$otherUser._id',
           email: '$otherUser.email',
-          full_name: '$otherUser.full_name',
-          user_name: '$otherUser.user_name',
-          profile_img: '$otherUser.profile_img',
+          name: '$otherUser.name',
+          profile_image: '$otherUser.profile_image',
         },
         project: {
           _id: 1,
