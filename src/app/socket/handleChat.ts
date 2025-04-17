@@ -75,7 +75,7 @@ const handleChat = async (
     } else {
       console.log('else');
       const projectId = data?.projectId;
-      if (projectId && Types.ObjectId.isValid(data)) {
+      if (projectId && Types.ObjectId.isValid(projectId)) {
         console.log('Valid ObjectId');
       } else {
         console.error('Invalid ObjectId');
@@ -125,19 +125,19 @@ const handleChat = async (
       );
 
       chat.participants.forEach(async (participantId: Types.ObjectId) => {
-        if (participantId.toString() !== currentUserId.toString()) {
-          socket
-            .to(participantId.toString())
-            .emit('receive-message', saveMessage);
-          const singleConversation = await getSingleConversation(
-            chat._id,
-            participantId.toString(),
-          );
-          io.to(participantId.toString()).emit(
-            'conversation',
-            singleConversation,
-          );
-        }
+        // if (participantId.toString() !== currentUserId.toString()) {
+        socket
+          .to(participantId.toString())
+          .emit(`message-${participantId}`, saveMessage);
+        const singleConversation = await getSingleConversation(
+          chat._id,
+          participantId.toString(),
+        );
+        io.to(participantId.toString()).emit(
+          'conversation',
+          singleConversation,
+        );
+        // }
       });
     }
   });
