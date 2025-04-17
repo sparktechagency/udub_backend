@@ -16,6 +16,50 @@ import { CONVERSATION_TYPE } from '../conversation/conversation.enum';
 const createProject = async (payload: IProject) => {
   const io = getIO();
 
+  // Check for projectManager
+  if (payload.projectManager && payload.projectManager.length > 0) {
+    const managers = await User.find({
+      _id: { $in: payload.projectManager },
+      role: USER_ROLE.manager,
+    });
+    if (managers.length !== payload.projectManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Managers');
+    }
+  }
+
+  // Check for financeManager
+  if (payload.financeManager && payload.financeManager.length > 0) {
+    const financeManagers = await User.find({
+      _id: { $in: payload.financeManager },
+      role: USER_ROLE.financeManager,
+    });
+    if (financeManagers.length !== payload.financeManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Finance Managers');
+    }
+  }
+
+  // Check for officeManager
+  if (payload.officeManager && payload.officeManager.length > 0) {
+    const officeManagers = await User.find({
+      _id: { $in: payload.officeManager },
+      role: USER_ROLE.officeManager,
+    });
+    if (officeManagers.length !== payload.officeManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Office Managers');
+    }
+  }
+
+  // Check for projectOwner
+  if (payload.projectOwner && payload.projectOwner.length > 0) {
+    const projectOwners = await User.find({
+      _id: { $in: payload.projectOwner },
+      role: USER_ROLE.user,
+    });
+    if (projectOwners.length !== payload.projectOwner.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Project Owners');
+    }
+  }
+
   const result = await Project.create(payload);
 
   const conversationData = [
