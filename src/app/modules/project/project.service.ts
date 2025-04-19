@@ -60,6 +60,7 @@ const createProject = async (payload: IProject) => {
     }
   }
 
+  // create project
   const result = await Project.create(payload);
 
   const conversationData = [
@@ -80,6 +81,7 @@ const createProject = async (payload: IProject) => {
     },
   ];
 
+  // create conversation-------------
   await Conversation.insertMany(conversationData);
 
   const receivers = [
@@ -97,6 +99,7 @@ const createProject = async (payload: IProject) => {
     redirectId: result._id,
   }));
 
+  // create notification -----------
   await Notification.insertMany(notificationData);
 
   const notificationCounts = await Promise.all(
