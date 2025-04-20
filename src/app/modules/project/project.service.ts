@@ -243,38 +243,50 @@ const deleteProject = async (id: string) => {
 };
 
 const updateProject = async (id: string, payload: Partial<IProject>) => {
-  const managers = await User.find({
-    _id: {
-      $in: [
-        payload.projectManager,
-        payload.officeManager,
-        payload.financeManager,
-      ],
-    },
-  }).select('_id');
+  // Check for projectManager
+  if (payload.projectManager && payload.projectManager.length > 0) {
+    const managers = await User.find({
+      _id: { $in: payload.projectManager },
+      role: USER_ROLE.manager,
+    });
+    if (managers.length !== payload.projectManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Managers');
+    }
+  }
 
-  const existingManagerIds = new Set(
-    managers.map((manager) => manager._id.toString()),
-  );
+  // Check for financeManager
+  if (payload.financeManager && payload.financeManager.length > 0) {
+    const financeManagers = await User.find({
+      _id: { $in: payload.financeManager },
+      role: USER_ROLE.financeManager,
+    });
+    if (financeManagers.length !== payload.financeManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Finance Managers');
+    }
+  }
 
-  if (
-    payload?.projectManager &&
-    !existingManagerIds.has(payload.projectManager.toString())
-  ) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Project manager not found');
+  // Check for officeManager
+  if (payload.officeManager && payload.officeManager.length > 0) {
+    const officeManagers = await User.find({
+      _id: { $in: payload.officeManager },
+      role: USER_ROLE.officeManager,
+    });
+    if (officeManagers.length !== payload.officeManager.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Office Managers');
+    }
   }
-  if (
-    payload?.officeManager &&
-    !existingManagerIds.has(payload.officeManager.toString())
-  ) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Office manager not found');
+
+  // Check for projectOwner
+  if (payload.projectOwner && payload.projectOwner.length > 0) {
+    const projectOwners = await User.find({
+      _id: { $in: payload.projectOwner },
+      role: USER_ROLE.user,
+    });
+    if (projectOwners.length !== payload.projectOwner.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid Project Owners');
+    }
   }
-  if (
-    payload?.financeManager &&
-    !existingManagerIds.has(payload.financeManager.toString())
-  ) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Finance manager not found');
-  }
+
   const project = await Project.exists({ _id: id });
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
