@@ -15,7 +15,7 @@ router.post(
   uploadFile(),
   (req, res, next) => {
     if (req.body.data) {
-      console.log('req.body', req.body);
+      req.body = JSON.parse(req.body.data);
     }
     next();
   },
