@@ -87,7 +87,10 @@ const handleChat = async (
         });
         return;
       }
-      const chat = await Conversation.findOne({ projectId: data.projectId });
+      const chat = await Conversation.findOne({
+        projectId: data.projectId,
+        type: data?.type,
+      });
       if (!chat) {
         emitError(socket, {
           code: 404,

@@ -5,6 +5,6 @@ export interface IPayment {
   project: Types.ObjectId;
   paymentMilestoneName: string;
   amount: number;
-  projectOwner: Types.ObjectId;
+  projectOwner: Types.ObjectId[];
   status: string;
 }

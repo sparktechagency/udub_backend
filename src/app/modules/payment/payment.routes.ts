@@ -11,7 +11,13 @@ const router = express.Router();
 
 router.post(
   '/add-payment',
-  auth(USER_ROLE.superAdmin, USER_ROLE.financeManager),
+  auth(
+    USER_ROLE.user,
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+    USER_ROLE.officeManager,
+  ),
   uploadFile(),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {
@@ -24,7 +30,13 @@ router.post(
 );
 router.patch(
   '/update-payment/:id',
-  auth(USER_ROLE.financeManager, USER_ROLE.user),
+  auth(
+    USER_ROLE.user,
+    USER_ROLE.manager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.financeManager,
+    USER_ROLE.officeManager,
+  ),
   uploadFile(),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {

@@ -232,6 +232,7 @@ const getConversation = async (
           _id: 1,
           title: 1,
           name: 1,
+          projectImage: 1,
         },
         lastMessage: 1,
         created_at: '$createdAt',

@@ -9,7 +9,7 @@ const PaymentSchema = new Schema<IPayment>(
       ref: 'User',
     },
     projectOwner: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       required: true,
       ref: 'User',
     },
