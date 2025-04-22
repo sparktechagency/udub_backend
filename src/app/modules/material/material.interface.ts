@@ -7,5 +7,5 @@ export interface IMaterial {
   manufacturer: string;
   model: string;
   image: string;
-  projectOwner: Types.ObjectId;
+  projectOwner: Types.ObjectId[];
 }

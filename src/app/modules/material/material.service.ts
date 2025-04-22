@@ -14,7 +14,7 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
     'name _id projectOwner projectManager officeManager',
   );
-  console.log('proejct', project);
+  console.log('proejctrrr', project);
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -22,8 +22,7 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
   }
   if (
-    project.projectManager.toString() != userData?.id &&
-    !project.officeManager.toString() &&
+    !project.projectManager.includes(userData.id) &&
     userData?.role != USER_ROLE.superAdmin
   ) {
     throw new AppError(
@@ -74,13 +73,14 @@ const updateMaterial = async (
     userData.role == USER_ROLE.officeManager ||
     userData.role == USER_ROLE.superAdmin
   ) {
-    if (payload.manufacturer || payload.image || payload.model) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
-    }
+    // if (payload.manufacturer || payload.image || payload.model) {
+    //   throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
+    // }
 
     if (
-      project.projectManager.toString() != userData.userId &&
-      project.officeManager.toString() != userData.userId
+      project.projectManager.includes(userData.id) &&
+      project.officeManager.includes(userData.id) &&
+      project.officeManager.includes(userData.id)
     ) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
@@ -89,7 +89,7 @@ const updateMaterial = async (
     }
   }
   if (userData.role == USER_ROLE.user) {
-    if (material.projectOwner != userData.id) {
+    if (!material.projectOwner.includes(userData.id)) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         'This is not your project material',
