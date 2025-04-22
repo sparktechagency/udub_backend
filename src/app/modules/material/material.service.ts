@@ -39,15 +39,17 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   });
 
   // send notification---------------
-  const notificationDataForUser = {
-    title: 'New Meterial added',
-    message: `A new meterial added to project : ${project.name} `,
-    receiver: project.projectOwner.toString(),
-    type: ENUM_NOTIFICATION_TYPE.MATERIAL,
-    redirectId: result._id.toString(),
-  };
+  for (const ownerId of project.projectOwner) {
+    const notificationDataForUser = {
+      title: 'New Meterial added',
+      message: `A new meterial added to project : ${project.name} `,
+      receiver: ownerId.toString(),
+      type: ENUM_NOTIFICATION_TYPE.MATERIAL,
+      redirectId: result._id.toString(),
+    };
 
-  sendNotification(notificationDataForUser);
+    sendNotification(notificationDataForUser);
+  }
 
   return result;
 };
@@ -106,18 +108,20 @@ const updateMaterial = async (
     userData.role == USER_ROLE.superAdmin ||
     userData.role == USER_ROLE.officeManager
   ) {
-    const notifcationDataForUser = {
-      title: `Material updated`,
-      message: `Material updated for project : ${project.name}`,
-      receiver: project.projectOwner.toString(),
-      type: ENUM_NOTIFICATION_TYPE.MATERIAL,
-      redirectId: material._id.toString(),
-    };
-    sendNotification(notifcationDataForUser);
+    for (const ownerId of project.projectOwner) {
+      const notifcationDataForUser = {
+        title: `Material updated`,
+        message: `Material updated for project : ${project.name}`,
+        receiver: ownerId.toString(),
+        type: ENUM_NOTIFICATION_TYPE.MATERIAL,
+        redirectId: material._id.toString(),
+      };
+      sendNotification(notifcationDataForUser);
+    }
   } else {
     const receivers = [
-      project.projectManager.toString(),
-      project.officeManager.toString(),
+      ...project.projectManager,
+      ...project.officeManager,
       USER_ROLE.superAdmin,
     ];
     const notificationData = receivers.map((receiver) => ({
