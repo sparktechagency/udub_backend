@@ -17,7 +17,7 @@ import getSpecificSheet from '../../helper/getSpecificSheet';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
-
+  console.log('payload', payload);
   // Check for projectManager
   if (payload.projectManager && payload.projectManager.length > 0) {
     const managers = await User.find({
@@ -366,7 +366,7 @@ const getSmartSheet = async (projectId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
 
-  const result = await getSpecificSheet(project.smartSheetId);
+  const result = await getSpecificSheet('5768154999377796');
   return result;
 };
 

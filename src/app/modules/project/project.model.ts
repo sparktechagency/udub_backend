@@ -11,22 +11,22 @@ const ProjectSchema = new Schema<IProject>(
     projectManager: {
       type: [Schema.Types.ObjectId],
       ref: 'User',
-      required: true,
+      // required: true,
     },
     officeManager: {
       type: [Schema.Types.ObjectId],
       ref: 'User',
-      required: true,
+      // required: true,
     },
     financeManager: {
       type: [Schema.Types.ObjectId],
       ref: 'User',
-      required: true,
+      // required: true,
     },
     projectOwner: {
       type: [Schema.Types.ObjectId],
       ref: 'User',
-      required: true,
+      // required: true,
     },
     projectImage: { type: String, default: '' },
     smartSheetId: {
