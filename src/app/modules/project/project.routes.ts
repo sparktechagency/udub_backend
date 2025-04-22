@@ -77,4 +77,16 @@ router.patch(
   ProjectController.updateProject,
 );
 
+router.get(
+  '/get-sheet/:id',
+  auth(
+    USER_ROLE.financeManager,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+  ),
+  ProjectController.getSmartSheet,
+);
+
 export const projectRoutes = router;

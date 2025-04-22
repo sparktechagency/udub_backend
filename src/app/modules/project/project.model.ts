@@ -29,6 +29,9 @@ const ProjectSchema = new Schema<IProject>(
       required: true,
     },
     projectImage: { type: String, default: '' },
+    smartSheetId: {
+      type: String,
+    },
   },
   { timestamps: true },
 );

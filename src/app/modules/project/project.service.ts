@@ -13,6 +13,7 @@ import getUserNotificationCount from '../../helper/getUserNotificationCount';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import Conversation from '../conversation/conversation.model';
 import { CONVERSATION_TYPE } from '../conversation/conversation.enum';
+import getSpecificSheet from '../../helper/getSpecificSheet';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
@@ -359,6 +360,16 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
   return result;
 };
 
+const getSmartSheet = async (projectId: string) => {
+  const project = await Project.findById(projectId);
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+
+  const result = await getSpecificSheet(project.smartSheetId);
+  return result;
+};
+
 const ProjectServices = {
   createProject,
   getAllProject,
@@ -366,5 +377,6 @@ const ProjectServices = {
   deleteProject,
   updateProject,
   getMyProject,
+  getSmartSheet,
 };
 export default ProjectServices;

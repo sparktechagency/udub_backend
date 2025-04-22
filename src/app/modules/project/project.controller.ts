@@ -82,6 +82,15 @@ const updateProject = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getSmartSheet = catchAsync(async (req, res) => {
+  const result = await projectServices.getSmartSheet(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Project smart sheet retrieved successfully',
+    data: result,
+  });
+});
 
 const ProjectController = {
   createProject,
@@ -90,5 +99,6 @@ const ProjectController = {
   deleteProject,
   updateProject,
   getMyProject,
+  getSmartSheet,
 };
 export default ProjectController;

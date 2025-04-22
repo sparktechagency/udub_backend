@@ -11,4 +11,5 @@ export interface IProject {
   officeManager: [Types.ObjectId];
   financeManager: [Types.ObjectId];
   projectImage: string;
+  smartSheetId: string;
 }
