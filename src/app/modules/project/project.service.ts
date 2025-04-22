@@ -297,7 +297,7 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     }
   }
 
-  const project = await Project.exists({ _id: id });
+  const project = await Project.findOne({ _id: id });
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
@@ -365,6 +365,46 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
       { participants: participants },
     );
   }
+
+  const newManagers = payload?.projectManager?.filter(
+    (manager) => !project.projectManager.includes(manager),
+  );
+  const newFinances = payload?.financeManager?.filter(
+    (manager) => !project.financeManager.includes(manager),
+  );
+  const newOfficeManagers = payload?.officeManager?.filter(
+    (manager) => !project.officeManager.includes(manager),
+  );
+  const newOwner = payload?.projectOwner?.filter(
+    (manager) => !project.projectOwner.includes(manager),
+  );
+  // console.log(newManagers, newFinances, newOfficeManagers, newOwner);
+  const receivers = [
+    ...(newManagers || []),
+    ...(newFinances || []),
+    ...(newOfficeManagers || []),
+    ...(newOwner || []),
+  ];
+
+  const notificationData = receivers.map((receiver) => ({
+    title: 'New project assigned',
+    message: `You assigned a new project: ${payload.name}`,
+    receiver,
+    type: ENUM_NOTIFICATION_TYPE.PROJECT,
+    redirectId: result._id,
+  }));
+
+  // create notification -----------
+  await Notification.insertMany(notificationData);
+
+  const notificationCounts = await Promise.all(
+    receivers.map((receiver) => getUserNotificationCount(receiver.toString())),
+  );
+  const io = getIO();
+
+  receivers.forEach((receiver, index) => {
+    io.to(receiver.toString()).emit('notification', notificationCounts[index]);
+  });
   return result;
 };
 
