@@ -52,7 +52,7 @@ const updatePayment = async (
     throw new AppError(httpStatus.NOT_FOUND, 'payment not found');
   }
   const project = await Project.findById(payment.project).select(
-    'projectOwner financeManager',
+    'projectOwner financeManager projectManager officeManager',
   );
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Prject not found');
@@ -73,7 +73,9 @@ const updatePayment = async (
   // for send notification ============
   if (
     userData.role == USER_ROLE.financeManager ||
-    userData.role == USER_ROLE.superAdmin
+    userData.role == USER_ROLE.superAdmin ||
+    userData.role == USER_ROLE.manager ||
+    userData.role == USER_ROLE.officeManager
   ) {
     for (const ownerId of project.projectOwner) {
       const notifcationDataForUser = {
@@ -91,6 +93,7 @@ const updatePayment = async (
       ...project.officeManager,
       USER_ROLE.superAdmin,
     ];
+    console.log('receiver', receivers);
     const notificationData = receivers.map((receiver) => ({
       title: `Payment updated`,
       message: `Payment updated by project owner for project : ${project.name}`,
