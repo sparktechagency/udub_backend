@@ -17,7 +17,6 @@ import getSpecificSheet from '../../helper/getSpecificSheet';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
-  console.log('payload', payload);
   // Check for projectManager
   if (payload.projectManager && payload.projectManager.length > 0) {
     const managers = await User.find({
@@ -67,17 +66,26 @@ const createProject = async (payload: IProject) => {
 
   const conversationData = [
     {
-      participants: [...payload.projectManager, ...payload.projectOwner],
+      participants: [
+        ...(payload.projectManager || []),
+        ...(payload.projectOwner || []),
+      ],
       projectId: result._id,
       type: CONVERSATION_TYPE.MANAGER_GROUP,
     },
     {
-      participants: [...payload.officeManager, ...payload.projectOwner],
+      participants: [
+        ...(payload.officeManager || []),
+        ...(payload.projectOwner || []),
+      ],
       projectId: result._id,
       type: CONVERSATION_TYPE.OFFICE_MANAGER_GROUP,
     },
     {
-      participants: [...payload.financeManager, ...payload.projectOwner],
+      participants: [
+        ...(payload.financeManager || []),
+        ...(payload.projectOwner || []),
+      ],
       projectId: result._id,
       type: CONVERSATION_TYPE.FINANCE_GROUP,
     },
@@ -87,10 +95,10 @@ const createProject = async (payload: IProject) => {
   await Conversation.insertMany(conversationData);
 
   const receivers = [
-    ...payload.projectManager,
-    ...payload.financeManager,
-    ...payload.officeManager,
-    ...payload.projectOwner,
+    ...(payload.projectManager || []),
+    ...(payload.financeManager || []),
+    ...(payload.officeManager || []),
+    ...(payload.projectOwner || []),
   ];
 
   const notificationData = receivers.map((receiver) => ({
