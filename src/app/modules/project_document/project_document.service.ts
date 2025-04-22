@@ -40,14 +40,16 @@ const uploadDocumentsForProject = async (
 
   const result = await ProjectDocument.insertMany(documentsData);
 
-  const notifcationDataForUser = {
-    title: `Document added`,
-    message: `Document added for project : ${project.name}`,
-    receiver: project.projectOwner.toString(),
-    type: ENUM_NOTIFICATION_TYPE.PROJECT,
-    redirectId: projectId.toString(),
-  };
-  sendNotification(notifcationDataForUser);
+  for (const ownerId of project.projectOwner) {
+    const notifcationDataForUser = {
+      title: `Document added`,
+      message: `Document added for project : ${project.name}`,
+      receiver: ownerId.toString(),
+      type: ENUM_NOTIFICATION_TYPE.PROJECT,
+      redirectId: projectId.toString(),
+    };
+    sendNotification(notifcationDataForUser);
+  }
 
   return result;
 };
