@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from 'http-status';
 import AppError from '../../error/appError';
 import { IProject } from './project.interface';
@@ -295,6 +296,66 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     new: true,
     runValidators: true,
   });
+
+  if (!result) {
+    throw new AppError(
+      httpStatus.SERVICE_UNAVAILABLE,
+      'Failed to update project',
+    );
+  }
+
+  if (
+    (payload.projectManager && payload.projectManager.length > 0) ||
+    (payload.projectOwner && payload.projectOwner.length > 0)
+  ) {
+    let participants: any = [];
+    if (payload.projectManager && payload.projectOwner) {
+      participants = [...payload.projectManager, ...payload.projectOwner];
+    } else if (payload.projectManager) {
+      participants = payload.projectManager;
+    } else if (payload.projectOwner) {
+      participants = payload.projectOwner;
+    }
+
+    await Conversation.findOneAndUpdate(
+      { projectId: result._id, type: CONVERSATION_TYPE.MANAGER_GROUP },
+      { participants: participants },
+    );
+  }
+  if (
+    (payload.financeManager && payload.financeManager.length > 0) ||
+    (payload.projectOwner && payload.projectOwner.length > 0)
+  ) {
+    let participants: any = [];
+    if (payload.financeManager && payload.projectOwner) {
+      participants = [...payload.financeManager, ...payload.projectOwner];
+    } else if (payload.financeManager) {
+      participants = payload.financeManager;
+    } else if (payload.projectOwner) {
+      participants = payload.projectOwner;
+    }
+    await Conversation.findOneAndUpdate(
+      { projectId: result._id, type: CONVERSATION_TYPE.FINANCE_GROUP },
+      { participants: participants },
+    );
+  }
+  if (
+    (payload.officeManager && payload.officeManager.length > 0) ||
+    (payload.projectOwner && payload.projectOwner.length > 0)
+  ) {
+    let participants: any = [];
+    if (payload.officeManager && payload.projectOwner) {
+      participants = [...payload.officeManager, ...payload.projectOwner];
+    } else if (payload.officeManager) {
+      participants = payload.officeManager;
+    } else if (payload.projectOwner) {
+      participants = payload.projectOwner;
+    }
+    await Conversation.findOneAndUpdate(
+      { projectId: result._id, type: CONVERSATION_TYPE.OFFICE_MANAGER_GROUP },
+      { participants: participants },
+    );
+  }
   return result;
 };
 
