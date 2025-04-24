@@ -52,7 +52,7 @@ export const getSingleConversation = async (
       select: 'name profile_image _id email',
     })
     .populate({ path: 'lastMessage', model: 'Message' })
-    .populate({ path: 'projectId', select: 'name title' });
+    .populate({ path: 'projectId', select: 'name title projectImage' });
 
   if (!conversation) return null;
   const countUnseenMessage = await Message.countDocuments({

@@ -131,9 +131,12 @@ const handleChat = async (
 
       chat.participants.forEach(async (participantId: Types.ObjectId) => {
         // if (participantId.toString() !== currentUserId.toString()) {
-        socket
-          .to(participantId.toString())
-          .emit(`message-${chat._id}`, saveMessage);
+
+        console.log('particpate and chat id', participantId, projectId);
+        io.to(participantId.toString()).emit(
+          `message-${projectId}`,
+          saveMessage,
+        );
         const singleConversation = await getSingleConversation(
           chat._id,
           participantId.toString(),

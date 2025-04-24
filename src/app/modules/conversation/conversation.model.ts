@@ -14,6 +14,7 @@ const conversationSchema = new Schema<IConversation>(
     },
     projectId: {
       type: Schema.Types.ObjectId,
+      ref: 'Project',
       default: null,
     },
     type: {

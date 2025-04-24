@@ -417,7 +417,7 @@ const getSmartSheet = async (projectId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
 
-  const result = await getSpecificSheet('5768154999377796');
+  const result = await getSpecificSheet(project.smartSheetId);
   return result;
 };
 
