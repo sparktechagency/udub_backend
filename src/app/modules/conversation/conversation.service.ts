@@ -123,20 +123,8 @@ const getConversation = async (
     {
       $lookup: {
         from: 'messages',
-        let: { conversationId: '$_id' },
-        pipeline: [
-          {
-            $match: {
-              $expr: { $eq: ['$conversationId', '$conversationId'] },
-            },
-          },
-          {
-            $sort: { createdAT: -1 },
-          },
-          {
-            $limit: 1,
-          },
-        ],
+        localField: 'lastMessage',
+        foreignField: '_id',
         as: 'lastMessage',
       },
     },
@@ -245,7 +233,8 @@ const getConversation = async (
       ? [{ $match: { $and: [searchConditions] } }]
       : []),
     {
-      $sort: { 'lastMessage.createdAt': -1 },
+      // $sort: { 'lastMessage.createdAt': -1 },
+      $sort: { updated_at: -1 },
     },
     { $skip: skip },
     { $limit: limit },

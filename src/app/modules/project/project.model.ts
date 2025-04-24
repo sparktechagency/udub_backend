@@ -32,6 +32,10 @@ const ProjectSchema = new Schema<IProject>(
     smartSheetId: {
       type: String,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

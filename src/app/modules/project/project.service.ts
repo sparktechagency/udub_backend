@@ -249,6 +249,8 @@ const deleteProject = async (id: string) => {
   }
   const result = await Project.findByIdAndDelete(id);
 
+  await Conversation.updateMany({ projectId: id }, { isDeleted: true });
+
   // TOOD: need to delete corrospoding images and documents
 
   return result;

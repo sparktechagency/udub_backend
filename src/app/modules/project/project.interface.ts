@@ -12,4 +12,5 @@ export interface IProject {
   financeManager: [Types.ObjectId];
   projectImage: string;
   smartSheetId: string;
+  isDeleted: false;
 }
