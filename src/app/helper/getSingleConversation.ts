@@ -76,6 +76,6 @@ export const getSingleConversation = async (
     project: conversation.projectId,
     type: conversation.type,
     unseenMsg: countUnseenMessage,
-    lastMsg: conversation.lastMessage,
+    lastMessage: conversation.lastMessage,
   };
 };

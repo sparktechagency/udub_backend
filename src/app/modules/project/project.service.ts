@@ -418,6 +418,10 @@ const getSmartSheet = async (projectId: string) => {
   }
 
   const result = await getSpecificSheet(project.smartSheetId);
+  console.log(result);
+  if (result.success == false) {
+    return {};
+  }
   return result;
 };
 
