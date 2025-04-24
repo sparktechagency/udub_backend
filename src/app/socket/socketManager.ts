@@ -6,6 +6,7 @@ import handleChat from './handleChat';
 import { User } from '../modules/user/user.model';
 import AppError from '../error/appError';
 import httpStatus from 'http-status';
+import { emitError } from './helper';
 let io: IOServer;
 export const onlineUser = new Set();
 const initializeSocket = (server: HTTPServer) => {
@@ -27,9 +28,15 @@ const initializeSocket = (server: HTTPServer) => {
 
       const currentUser = await User.findById(userId);
       if (!currentUser) {
-        return;
+        emitError(socket, {
+          code: 400,
+          message: 'Unauthorized access',
+          type: 'general',
+          details: 'You are not authorized , becasue your account not found',
+        });
       }
       const currentUserId = currentUser?._id.toString();
+      console.log('curretn user id', currentUserId);
       // create a room-------------------------
       socket.join(currentUserId as string);
       // set online user
@@ -38,7 +45,7 @@ const initializeSocket = (server: HTTPServer) => {
       io.emit('onlineUser', Array.from(onlineUser));
 
       // handle chat -------------------
-      await handleChat(io, socket, currentUserId);
+      await handleChat(io, socket, currentUserId as string);
 
       socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);

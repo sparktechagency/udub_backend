@@ -91,6 +91,8 @@ const createProject = async (payload: IProject) => {
     },
   ];
 
+  // console.log('convversatain data', conversationData);
+
   // create conversation-------------
   await Conversation.insertMany(conversationData);
 
@@ -318,12 +320,13 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     (payload.projectOwner && payload.projectOwner.length > 0)
   ) {
     let participants: any = [];
+    console.log('console');
     if (payload.projectManager && payload.projectOwner) {
       participants = [...payload.projectManager, ...payload.projectOwner];
     } else if (payload.projectManager) {
-      participants = payload.projectManager;
+      participants = [...payload.projectManager, ...project.projectOwner];
     } else if (payload.projectOwner) {
-      participants = payload.projectOwner;
+      participants = [...payload.projectOwner, ...project.projectManager];
     }
 
     await Conversation.findOneAndUpdate(
@@ -339,9 +342,9 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     if (payload.financeManager && payload.projectOwner) {
       participants = [...payload.financeManager, ...payload.projectOwner];
     } else if (payload.financeManager) {
-      participants = payload.financeManager;
+      participants = [...payload.financeManager, ...project.projectOwner];
     } else if (payload.projectOwner) {
-      participants = payload.projectOwner;
+      participants = [...payload.projectOwner, ...project.financeManager];
     }
     await Conversation.findOneAndUpdate(
       { projectId: result._id, type: CONVERSATION_TYPE.FINANCE_GROUP },
@@ -356,9 +359,9 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     if (payload.officeManager && payload.projectOwner) {
       participants = [...payload.officeManager, ...payload.projectOwner];
     } else if (payload.officeManager) {
-      participants = payload.officeManager;
+      participants = [...payload.officeManager, ...project.projectOwner];
     } else if (payload.projectOwner) {
-      participants = payload.projectOwner;
+      participants = [...payload.projectOwner, ...project.officeManager];
     }
     await Conversation.findOneAndUpdate(
       { projectId: result._id, type: CONVERSATION_TYPE.OFFICE_MANAGER_GROUP },
