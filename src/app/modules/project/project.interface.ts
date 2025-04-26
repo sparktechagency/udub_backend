@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 
+// project interface
 export interface IProject {
   name: string;
   projectOwnerEmail?: string;
