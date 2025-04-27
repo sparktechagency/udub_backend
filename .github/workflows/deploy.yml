@@ -3,7 +3,7 @@ name: Deploy Node.js with TypeScript on EC2
 on:
   push:
     branches:
-      - 'development'
+      - 'main'
   pull_request:
     branches:
       - 'main'
