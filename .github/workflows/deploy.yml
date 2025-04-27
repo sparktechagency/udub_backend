@@ -39,7 +39,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.15' # Same Node.js version as the build job
+          node-version: '20.17' # Same Node.js version as the build job
 
       - name: Install Dependencies
         run: npm install --frozen-lockfile # Install all dependencies
