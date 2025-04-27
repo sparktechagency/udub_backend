@@ -14,13 +14,12 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
     'name _id projectOwner projectManager officeManager',
   );
-  console.log('proejctrrr', project);
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
-  if (payload.manufacturer || payload.image || payload.model) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
-  }
+  // if (payload.manufacturer || payload.image || payload.model) {
+  //   throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
+  // }
   if (
     !project.projectManager.includes(userData.id) &&
     userData?.role != USER_ROLE.superAdmin

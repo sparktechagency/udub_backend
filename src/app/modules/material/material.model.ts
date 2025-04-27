@@ -14,7 +14,7 @@ const MaterialSchema = new Schema<IMaterial>(
       ref: 'User',
     },
     project: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
-    title: { type: String, required: true },
+    title: { type: String },
     manufacturer: { type: String, required: false },
     model: { type: String, required: false },
     image: { type: String, required: false },

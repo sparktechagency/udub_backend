@@ -14,4 +14,5 @@ export interface IProject {
   projectImage: string;
   smartSheetId: string;
   isDeleted: false;
+  locationDropDownItems: string[];
 }

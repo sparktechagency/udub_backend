@@ -36,6 +36,10 @@ const ProjectSchema = new Schema<IProject>(
       type: Boolean,
       default: false,
     },
+    locationDropDownItems: {
+      type: [String],
+      required: true,
+    },
   },
   { timestamps: true },
 );

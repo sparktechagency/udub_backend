@@ -8,6 +8,7 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
+import mongoose from 'mongoose';
 
 const uploadImageForProject = async (
   userId: string,
@@ -78,6 +79,10 @@ const updateImage = async (
 };
 
 const getProjectImages = async (id: string, query: Record<string, unknown>) => {
+  const project = await Project.findById(id);
+  if (!project) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+  }
   const imageQuery = new QueryBuilder(
     ProjectImage.find({ projectId: id }),
     query,
@@ -89,9 +94,32 @@ const getProjectImages = async (id: string, query: Record<string, unknown>) => {
     .fields();
   const meta = await imageQuery.countTotal();
   const result = await imageQuery.modelQuery;
+
+  const adminDropdownItems = project.locationDropDownItems;
+  const dropDownItems: any = ProjectImage.aggregate([
+    {
+      $match: {
+        projectId: new mongoose.Types.ObjectId(id),
+      },
+    },
+    {
+      $group: {
+        _id: '$title',
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        title: 1,
+      },
+    },
+  ]);
+  const uniqueTitles = dropDownItems.map((item: any) => item.title);
   return {
     meta,
     result,
+    adminDropdownItems,
+    userDropdownItems: uniqueTitles,
   };
 };
 
