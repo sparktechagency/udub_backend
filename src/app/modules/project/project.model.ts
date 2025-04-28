@@ -7,7 +7,8 @@ const ProjectSchema = new Schema<IProject>(
     // projectOwnerEmail: { type: String },
     title: { type: String, required: true },
     startDate: { type: Date, required: true },
-    liveLink: { type: String, required: false },
+    liveLink: { type: String, default: '' },
+    liveLink2: { type: String, default: '' },
     projectManager: {
       type: [Schema.Types.ObjectId],
       ref: 'User',

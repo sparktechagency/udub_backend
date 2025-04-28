@@ -87,7 +87,7 @@ const getProjectImages = async (id: string, query: Record<string, unknown>) => {
     ProjectImage.find({ projectId: id }),
     query,
   )
-    .search(['title'])
+    .search(['title', 'description'])
     .filter()
     .sort()
     .paginate()
@@ -96,7 +96,7 @@ const getProjectImages = async (id: string, query: Record<string, unknown>) => {
   const result = await imageQuery.modelQuery;
 
   const adminDropdownItems = project.locationDropDownItems;
-  const dropDownItems: any = ProjectImage.aggregate([
+  const dropDownItems: any = await ProjectImage.aggregate([
     {
       $match: {
         projectId: new mongoose.Types.ObjectId(id),
@@ -110,11 +110,13 @@ const getProjectImages = async (id: string, query: Record<string, unknown>) => {
     {
       $project: {
         _id: 0,
-        title: 1,
+        title: '$_id',
       },
     },
   ]);
-  const uniqueTitles = dropDownItems.map((item: any) => item.title);
+
+  // Using .map() after awaiting the result
+  const uniqueTitles = dropDownItems?.map((item: any) => item.title);
   return {
     meta,
     result,
