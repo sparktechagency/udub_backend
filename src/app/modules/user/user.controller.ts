@@ -3,6 +3,7 @@ import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import userServices from './user.services';
 import { uploadToS3FromServer } from '../../helper/uploadToS3FromServer';
+import { getCloudFrontUrl } from '../../helper/getCloudfontUrl';
 
 const registerUser = catchAsync(async (req, res) => {
   const result = await userServices.registerUser(req.body);
@@ -23,7 +24,8 @@ const updateUserProfile = catchAsync(async (req, res) => {
   // const imageName = req.user.id;
   if (profile_image_path) {
     const profile_image_url = await uploadToS3FromServer(profile_image_path);
-    req.body.profile_image = profile_image_url as string;
+    // req.body.profile_image = profile_image_url as string;
+    req.body.profile_image = getCloudFrontUrl(profile_image_url);
   }
 
   const result = await userServices.updateUserProfile(req.user.id, req.body);

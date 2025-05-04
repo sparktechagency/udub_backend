@@ -3,6 +3,7 @@ import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import projectServices from './project.service';
 import { uploadToS3FromServer } from '../../helper/uploadToS3FromServer';
+import { getCloudFrontUrl } from '../../helper/getCloudfontUrl';
 
 const createProject = catchAsync(async (req, res) => {
   const { files } = req;
@@ -13,7 +14,8 @@ const createProject = catchAsync(async (req, res) => {
   // const imageName = req.user.id;
   if (project_image_path) {
     const project_image_url = await uploadToS3FromServer(project_image_path);
-    req.body.projectImage = project_image_url as string;
+    // req.body.projectImage = project_image_url as string;
+    req.body.projectImage = getCloudFrontUrl(project_image_url);
   }
   const result = await projectServices.createProject(req.body);
   sendResponse(res, {

@@ -9,6 +9,7 @@ import sendNotification from '../../helper/sendNotification';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 import mongoose from 'mongoose';
+import { getCloudFrontUrl } from '../../helper/getCloudfontUrl';
 
 const uploadImageForProject = async (
   userId: string,
@@ -35,7 +36,9 @@ const uploadImageForProject = async (
     projectId: projectId,
     title: image.title,
     description: image.description,
-    image_url: image.image_url,
+    //!TODO: if you want to change s3 to cloudfont
+    // image_url: image.image_url,
+    image_url: getCloudFrontUrl(image.image_url),
   }));
   const result = await ProjectImage.insertMany(imagesData);
   for (const ownerId of project.projectOwner) {

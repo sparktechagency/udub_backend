@@ -7,31 +7,6 @@ import project_imageServices from './project_image.service';
 // import AppError from '../../error/appError';
 
 const uploadImagesForProject = catchAsync(async (req, res) => {
-  // const { files } = req;
-  // let images: any;
-  // if (files && typeof files === 'object' && 'project_images' in files) {
-  //   images = files['project_images'].map((file) => file.path);
-  // }
-  // if (!images.length) {
-  //   throw new AppError(httpStatus.NOT_FOUND, 'Images not found');
-  // }
-
-  // // Upload images from 'uploads' folder to Cloudinary
-  // const uploadedImages = await Promise.all(
-  //   images.map(async (imagePath: any, index: any) => {
-  //     const imageName = `${req.user.id}_${Date.now()}_${index}`;
-  //     const { secure_url } = await sendImageToCloudinary(
-  //       imageName,
-  //       imagePath,
-  //       'project_images',
-  //     );
-  //     return secure_url;
-  //   }),
-  // );
-
-  // // Replace local paths with Cloudinary URLs in req.body
-  // req.body.images = uploadedImages;
-
   const result = await project_imageServices.uploadImageForProject(
     req.user.id,
     req.params.projectId,

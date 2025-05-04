@@ -58,7 +58,7 @@ const deleteUserAccount = async (user: JwtPayload, password: string) => {
 };
 
 const getAllUserFromDB = async (query: Record<string, unknown>) => {
-  const resultQuery = new QueryBuilder(User.find(), query)
+  const resultQuery = new QueryBuilder(User.find({ isDeleted: false }), query)
     .search(['name', 'email'])
     .filter()
     .sort()
