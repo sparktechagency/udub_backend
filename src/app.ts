@@ -41,6 +41,7 @@ app.use(
       'http://localhost:4174',
       'https://celebrated-cactus-973e22.netlify.app',
       'http://13.49.200.198',
+      'http://52.45.173.22',
     ],
     credentials: true,
   }),
