@@ -74,7 +74,8 @@ const updateProject = catchAsync(async (req, res) => {
   // const imageName = req.user.id;
   if (project_image_path) {
     const project_image_url = await uploadToS3FromServer(project_image_path);
-    req.body.projectImage = project_image_url as string;
+    // req.body.projectImage = project_image_url as string;
+    req.body.projectImage = getCloudFrontUrl(project_image_url);
   }
   const result = await projectServices.updateProject(req.params.id, req.body);
   sendResponse(res, {
