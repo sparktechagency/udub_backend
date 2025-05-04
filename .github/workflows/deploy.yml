@@ -171,7 +171,10 @@ jobs:
           ssh $EC2_USER@$EC2_HOST "cd ~/applications/backend && npm install --frozen-lockfile --production"
 
           # Set the environment variables (using the ENV_VARS_JSON secret)
-          ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/applications/backend/.env"
+          # ssh $EC2_USER@$EC2_HOST "echo '$ENV_VARS_JSON' > ~/applications/backend/.env"
+          ssh $EC2_USER@$EC2_HOST << 'EOF'
+          echo "$ENV_VARS_JSON" | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > ~/applications/backend/.env
+          EOF
 
           # Stop the existing PM2 process if it exists
           ssh $EC2_USER@$EC2_HOST "pm2 delete backend || true"  # Ensures no errors if the process doesn't exist
