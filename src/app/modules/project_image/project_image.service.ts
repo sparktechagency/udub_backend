@@ -38,7 +38,7 @@ const uploadImageForProject = async (
     description: image.description,
     //!TODO: if you want to change s3 to cloudfont
     // image_url: image.image_url,
-    image_url: getCloudFrontUrl(image.image_url),
+    image_url: getCloudFrontUrl(image?.image_url),
   }));
   const result = await ProjectImage.insertMany(imagesData);
   for (const ownerId of project.projectOwner) {
@@ -64,6 +64,9 @@ const updateImage = async (
   if (!image) {
     throw new AppError(httpStatus.NOT_FOUND, 'Image not found');
   }
+  if (payload.image_url) {
+    payload.image_url = getCloudFrontUrl(payload?.image_url);
+  }
   const result = await ProjectImage.findByIdAndUpdate(
     id,
     { ...payload, addedBy: updateBy },
@@ -74,8 +77,7 @@ const updateImage = async (
   );
   // TOOD: need to be change in store image another way
   if (payload.image_url) {
-    const oldFileName = image.image_url.split('amazonaws.com/')[1];
-    console.log('oldfile name', oldFileName);
+    const oldFileName = image.image_url.split('cloudfront.net/')[1];
     await deleteFileFromS3(oldFileName);
   }
   return result;

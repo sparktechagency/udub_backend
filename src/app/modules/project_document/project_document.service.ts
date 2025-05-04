@@ -8,6 +8,7 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
+import { getCloudFrontUrl } from '../../helper/getCloudfontUrl';
 
 const uploadDocumentsForProject = async (
   userId: string,
@@ -35,7 +36,7 @@ const uploadDocumentsForProject = async (
     projectId: projectId,
     title: document?.title,
     description: document?.description,
-    document_url: document?.document_url,
+    document_url: getCloudFrontUrl(document?.document_url),
   }));
 
   const result = await ProjectDocument.insertMany(documentsData);
@@ -59,6 +60,9 @@ const updateDocument = async (
   id: string,
   payload: Partial<IProjectDocument>,
 ) => {
+  if (payload.document_url) {
+    payload.document_url = getCloudFrontUrl(payload.document_url as string);
+  }
   const document = await ProjectDocument.findOne({ _id: id });
   if (!document) {
     throw new AppError(httpStatus.NOT_FOUND, 'Document not found');
@@ -74,7 +78,7 @@ const updateDocument = async (
   // TOOD: need to be change in store image another way
   if (payload.document_url) {
     if (payload.document_url) {
-      const oldFileName = document.document_url.split('amazonaws.com/')[1];
+      const oldFileName = document.document_url.split('cloudfront.net/')[1];
       console.log('oldfile name', oldFileName);
       await deleteFileFromS3(oldFileName);
     }

@@ -9,6 +9,8 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import sendNotification from '../../helper/sendNotification';
 import Notification from '../notification/notification.model';
 import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
+import { getCloudFrontUrl } from '../../helper/getCloudfontUrl';
+import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 
 const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   const project = await Project.findOne({ _id: payload.project }).select(
@@ -28,6 +30,9 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
       httpStatus.BAD_REQUEST,
       "You are not asssigned this project , so you can't able to add a material",
     );
+  }
+  if (payload.image) {
+    payload.image = getCloudFrontUrl(payload?.image);
   }
   const result = await Material.create({
     ...payload,
@@ -57,6 +62,9 @@ const updateMaterial = async (
   id: string,
   payload: IMaterial,
 ) => {
+  if (payload.image) {
+    payload.image = getCloudFrontUrl(payload?.image);
+  }
   const material = await Material.findById(id);
   if (!material) {
     throw new AppError(httpStatus.NOT_FOUND, 'Material not found');
@@ -100,6 +108,11 @@ const updateMaterial = async (
     new: true,
     runValidators: true,
   });
+
+  if (payload.image) {
+    const oldFileName = material.image.split('cloudfront.net/')[1];
+    await deleteFileFromS3(oldFileName);
+  }
 
   // for send notification ============
   if (
