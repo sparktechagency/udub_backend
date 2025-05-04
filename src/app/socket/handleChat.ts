@@ -150,7 +150,7 @@ const handleChat = async (
     }
   });
 
-  // send---------------------------------------
+  // send----------------------
   socket.on('seen', async ({ conversationId, msgByUserId }) => {
     await Message.updateMany(
       { conversationId: conversationId, msgByUserId: msgByUserId },
