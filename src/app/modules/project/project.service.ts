@@ -14,6 +14,7 @@ import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import Conversation from '../conversation/conversation.model';
 import { CONVERSATION_TYPE } from '../conversation/conversation.enum';
 import getSpecificSheet from '../../helper/getSpecificSheet';
+import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
@@ -315,6 +316,14 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
       httpStatus.SERVICE_UNAVAILABLE,
       'Failed to update project',
     );
+  }
+
+  if (payload.projectImage) {
+    if (project.projectImage) {
+      const oldFileName = project.projectImage.split('cloudfront.net/')[1];
+      console.log('oldfile name', oldFileName);
+      await deleteFileFromS3(oldFileName);
+    }
   }
 
   if (
