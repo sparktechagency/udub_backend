@@ -19,7 +19,10 @@ const getMessages = async (
 
     if (conversation) {
       const messageQuery = new QueryBuilder(
-        Message.find({ conversationId: conversation?._id }),
+        Message.find({ conversationId: conversation?._id }).populate({
+          path: 'msgByUserId',
+          select: 'name profile_image',
+        }),
         query,
       )
         .search(['text'])
@@ -29,6 +32,7 @@ const getMessages = async (
         .sort();
       const result = await messageQuery.modelQuery;
       const meta = await messageQuery.countTotal();
+
       const userData = await User.findById(paylaod.userId).select(
         'name profile_image',
       );
@@ -61,7 +65,10 @@ const getMessages = async (
       throw new AppError(httpStatus.NOT_FOUND, 'Conversation not found');
     }
     const messageQuery = new QueryBuilder(
-      Message.find({ conversationId: conversation?._id }),
+      Message.find({ conversationId: conversation?._id }).populate({
+        path: 'msgByUserId',
+        select: 'name profile_image',
+      }),
       query,
     )
       .search(['text'])

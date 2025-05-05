@@ -7,8 +7,6 @@ import { User } from '../modules/user/user.model';
 import AppError from '../error/appError';
 import httpStatus from 'http-status';
 import { emitError } from './helper';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import config from '../config';
 let io: IOServer;
 export const onlineUser = new Set();
 const initializeSocket = (server: HTTPServer) => {
@@ -23,50 +21,50 @@ const initializeSocket = (server: HTTPServer) => {
     //   io.emit('pong', data);
     // });
     io.on('connection', async (socket: Socket) => {
-      // const userId = socket.handshake.query.id as string;
-      // if (!userId) {
+      const userId = socket.handshake.query.id as string;
+      if (!userId) {
+        return;
+      }
+      // const token = socket.handshake.headers['authorization'];
+      // if (!token) {
+      //   emitError(socket, {
+      //     code: 400,
+      //     message: 'Unauthorized access',
+      //     type: 'general',
+      //     details: 'You are not authorized , becasue your account not found',
+      //   });
+      // }
+      // let decoded;
+
+      // try {
+      //   decoded = jwt.verify(
+      //     token as string,
+      //     config.jwt_access_secret as string,
+      //   ) as JwtPayload;
+      // } catch (err) {
+      //   emitError(socket, {
+      //     code: 400,
+      //     message: 'Unauthorized access',
+      //     type: 'general',
+      //     details: 'You are not authorized , becasue your account not found',
+      //   });
       //   return;
       // }
-      const token = socket.handshake.headers['authorization'];
-      if (!token) {
-        emitError(socket, {
-          code: 400,
-          message: 'Unauthorized access',
-          type: 'general',
-          details: 'You are not authorized , becasue your account not found',
-        });
-      }
-      let decoded;
-
-      try {
-        decoded = jwt.verify(
-          token as string,
-          config.jwt_access_secret as string,
-        ) as JwtPayload;
-      } catch (err) {
-        emitError(socket, {
-          code: 400,
-          message: 'Unauthorized access',
-          type: 'general',
-          details: 'You are not authorized , becasue your account not found',
-        });
-        return;
-      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-      if (!decoded) {
-        emitError(socket, {
-          code: 400,
-          message: 'Unauthorized access',
-          type: 'general',
-          details: 'Token is expired',
-        });
-        return;
-      }
-      const { id } = decoded;
+      // if (!decoded) {
+      //   emitError(socket, {
+      //     code: 400,
+      //     message: 'Unauthorized access',
+      //     type: 'general',
+      //     details: 'Token is expired',
+      //   });
+      //   return;
+      // }
+      // const { id } = decoded;
 
-      // const currentUser = await User.findById(userId);
-      const currentUser = await User.findById(id);
+      const currentUser = await User.findById(userId);
+      // const currentUser = await User.findById(id);
       if (!currentUser) {
         emitError(socket, {
           code: 400,

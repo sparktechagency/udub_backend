@@ -43,7 +43,7 @@ const handleChat = async (
         text: data.text,
         imageUrl: data.imageUrl || [],
         videoUrl: data.videoUrl || [],
-        msgByUserId: currentUserId,
+        msgByUserId: data?.sender,
         conversationId: conversation?._id,
       };
       const saveMessage = await Message.create(messageData);
@@ -112,30 +112,31 @@ const handleChat = async (
         });
       }
 
+      console.log('curretn user id', currentUserId);
       // create new message
       const messageData = {
         text: data.text,
         imageUrl: data.imageUrl || [],
         videoUrl: data.videoUrl || [],
-        msgByUserId: currentUserId,
+        msgByUserId: data?.sender,
         conversationId: chat?._id,
       };
       const saveMessage = await Message.create(messageData);
-
+      const populatedMessage = await saveMessage.populate({
+        path: 'msgByUserId',
+        select: 'name profile_image',
+      });
       await Conversation.updateOne(
         { _id: chat?._id },
         {
-          lastMessage: saveMessage._id,
+          lastMessage: populatedMessage._id,
         },
       );
 
       chat.participants.forEach(async (participantId: Types.ObjectId) => {
-        // if (participantId.toString() !== currentUserId.toString()) {
-
-        console.log('particpate and chat id', participantId, projectId);
         io.to(participantId.toString()).emit(
           `message-${projectId}`,
-          saveMessage,
+          populatedMessage,
         );
         const singleConversation = await getSingleConversation(
           chat._id,
