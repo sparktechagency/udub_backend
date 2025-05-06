@@ -78,16 +78,12 @@ const updateMaterial = async (
   if (
     userData.role == USER_ROLE.manager ||
     userData.role == USER_ROLE.officeManager ||
-    userData.role == USER_ROLE.superAdmin
+    userData.role == USER_ROLE.financeManager
   ) {
-    // if (payload.manufacturer || payload.image || payload.model) {
-    //   throw new AppError(httpStatus.BAD_REQUEST, 'You can just update title');
-    // }
-
     if (
-      project.projectManager.includes(userData.id) &&
-      project.officeManager.includes(userData.id) &&
-      project.officeManager.includes(userData.id)
+      !project.projectManager.includes(userData.id) &&
+      !project.officeManager.includes(userData.id) &&
+      !project.financeManager.includes(userData.id)
     ) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
@@ -110,8 +106,10 @@ const updateMaterial = async (
   });
 
   if (payload.image) {
-    const oldFileName = material.image.split('cloudfront.net/')[1];
-    await deleteFileFromS3(oldFileName);
+    if (material.image) {
+      const oldFileName = material.image.split('cloudfront.net/')[1];
+      await deleteFileFromS3(oldFileName);
+    }
   }
 
   // for send notification ============
