@@ -63,8 +63,7 @@ const s3 = new S3Client({
 });
 
 export const deleteFileFromS3 = async (fileName: string) => {
-  const updatedFileName = fileName.split('cloudfront.net/')[1];
-  const decodedFileName = decodeURIComponent(updatedFileName);
+  const decodedFileName = decodeURIComponent(fileName);
 
   const bucket = process.env.AWS_BUCKET_NAME!;
 

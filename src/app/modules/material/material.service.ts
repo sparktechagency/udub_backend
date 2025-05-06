@@ -96,7 +96,7 @@ const updateMaterial = async (
     }
   }
   if (userData.role == USER_ROLE.user) {
-    if (!material.projectOwner.includes(userData.id)) {
+    if (!project.projectOwner.includes(userData.id)) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
         'This is not your project material',
