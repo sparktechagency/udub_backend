@@ -22,14 +22,40 @@ const createMaterial = async (userData: JwtPayload, payload: IMaterial) => {
   // if (payload.manufacturer || payload.image || payload.model) {
   //   throw new AppError(httpStatus.BAD_REQUEST, 'You can just add title');
   // }
+  // if (
+  //   !project.projectManager.includes(userData.id) &&
+
+  //   userData?.role != USER_ROLE.superAdmin
+  // ) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     "You are not asssigned this project , so you can't able to add a material",
+  //   );
+  // }
+
   if (
-    !project.projectManager.includes(userData.id) &&
-    userData?.role != USER_ROLE.superAdmin
+    userData.role == USER_ROLE.manager ||
+    userData.role == USER_ROLE.officeManager ||
+    userData.role == USER_ROLE.financeManager
   ) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "You are not asssigned this project , so you can't able to add a material",
-    );
+    if (
+      !project.projectManager.includes(userData.id) &&
+      !project.officeManager.includes(userData.id) &&
+      !project.financeManager.includes(userData.id)
+    ) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "You are not asssigned this project , so you can't able to add this material",
+      );
+    }
+  }
+  if (userData.role == USER_ROLE.user) {
+    if (!project.projectOwner.includes(userData.id)) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'This is not your project project',
+      );
+    }
   }
   if (payload.image) {
     payload.image = getCloudFrontUrl(payload?.image);
