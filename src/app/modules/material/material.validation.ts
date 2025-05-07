@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const materialValidationSchema = z.object({
   body: z.object({
     project: z.string().nonempty('Project is required'),
-    title: z.string().nonempty('Title is required'),
+    title: z.string().optional(),
     manufacturer: z.string().optional(),
     model: z.string().optional(),
     image: z.string().optional(),

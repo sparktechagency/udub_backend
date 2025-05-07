@@ -10,7 +10,12 @@ const router = express.Router();
 // material routes
 router.post(
   '/add-material',
-  auth(USER_ROLE.manager, USER_ROLE.officeManager, USER_ROLE.superAdmin),
+  auth(
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+    USER_ROLE.user,
+  ),
   validateRequest(MaterialValidations.materialValidationSchema),
   MaterialController.addMaterial,
 );
