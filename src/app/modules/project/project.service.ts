@@ -331,7 +331,6 @@ const updateProject = async (id: string, payload: Partial<IProject>) => {
     (payload.projectOwner && payload.projectOwner.length > 0)
   ) {
     let participants: any = [];
-    console.log('console');
     if (payload.projectManager && payload.projectOwner) {
       participants = [...payload.projectManager, ...payload.projectOwner];
     } else if (payload.projectManager) {

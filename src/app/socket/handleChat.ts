@@ -135,7 +135,7 @@ const handleChat = async (
 
       chat.participants.forEach(async (participantId: Types.ObjectId) => {
         io.to(participantId.toString()).emit(
-          `message-${projectId}`,
+          `message-${projectId}-${chat.type}`,
           populatedMessage,
         );
         const singleConversation = await getSingleConversation(
