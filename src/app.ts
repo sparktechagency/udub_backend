@@ -42,6 +42,8 @@ app.use(
       'https://celebrated-cactus-973e22.netlify.app',
       'http://13.49.200.198',
       'http://52.45.173.22',
+      'https://admin.candor-construction.com',
+      'http://admin.candor-construction.com',
     ],
     credentials: true,
   }),
