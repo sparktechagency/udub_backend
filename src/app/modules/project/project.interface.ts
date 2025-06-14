@@ -4,7 +4,7 @@ import { Types } from 'mongoose';
 export interface IProject {
   name: string;
   projectOwnerEmail?: string;
-  title: string;
+  address: string;
   startDate: Date;
   liveLink: string;
   liveLink2?: string;

@@ -65,4 +65,10 @@ router.get(
   userControllers.getAllUser,
 );
 
+router.get(
+  '/get-all-employee',
+  auth(USER_ROLE.superAdmin),
+  userControllers.getAllEmployee,
+);
+
 export const userRoutes = router;

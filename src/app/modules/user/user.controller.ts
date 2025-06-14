@@ -72,6 +72,16 @@ const getAllUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAllEmployee = catchAsync(async (req, res) => {
+  const result = await userServices.getAllEmployee(req.query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: `Employees retrieved successfully`,
+    data: result,
+  });
+});
 const deleteAccount = catchAsync(async (req, res) => {
   const result = await userServices.deleteAccount(req.params.id);
   sendResponse(res, {
@@ -85,7 +95,7 @@ const deleteAccount = catchAsync(async (req, res) => {
 
 const userController = {
   registerUser,
-
+  getAllEmployee,
   updateUserProfile,
   getAllUser,
   getMyProfile,

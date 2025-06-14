@@ -7,6 +7,7 @@ import { TUser } from './user.interface';
 import { JwtPayload } from 'jsonwebtoken';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
+import { USER_ROLE } from './user.constant';
 
 const registerUser = async (payload: TUser) => {
   const emailExist = await User.findOne({ email: payload.email });
@@ -71,6 +72,30 @@ const getAllUserFromDB = async (query: Record<string, unknown>) => {
     result,
   };
 };
+const getAllEmployee = async (query: Record<string, unknown>) => {
+  const resultQuery = new QueryBuilder(
+    User.find({
+      isDeleted: false,
+      $or: [
+        { role: USER_ROLE.financeManager },
+        { role: USER_ROLE.manager },
+        { role: USER_ROLE.officeManager },
+      ],
+    }),
+    query,
+  )
+    .search(['name', 'email'])
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const meta = await resultQuery.countTotal();
+  const result = await resultQuery.modelQuery;
+  return {
+    meta,
+    result,
+  };
+};
 
 const deleteAccount = async (id: string) => {
   const user = await User.findById(id);
@@ -95,6 +120,7 @@ const userServices = {
   deleteUserAccount,
   getAllUserFromDB,
   deleteAccount,
+  getAllEmployee,
 };
 
 export default userServices;

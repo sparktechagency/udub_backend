@@ -5,7 +5,7 @@ const ProjectSchema = new Schema<IProject>(
   {
     name: { type: String, required: true },
     // projectOwnerEmail: { type: String },
-    title: { type: String, required: true },
+    address: { type: String, required: true },
     startDate: { type: Date, required: true },
     liveLink: { type: String, default: '' },
     liveLink2: { type: String, default: '' },
