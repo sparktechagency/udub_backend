@@ -94,8 +94,8 @@ export const generatePresignedUrl = async ({
     folder = 'uploads/project_image/';
   } else if (fileCategory === 'video') {
     folder = 'uploads/videos/';
-  } else if (fileCategory === 'project_document') {
-    folder = 'uploads/project_document/';
+  } else if (fileCategory === 'audio') {
+    folder = 'uploads/audios/';
   } else if (fileCategory === 'material_image') {
     folder = 'uploads/project_material_image/';
   }
