@@ -9,14 +9,14 @@ const router = express.Router();
 
 router.post(
   '/create-podcast',
-  auth(USER_ROLE.superAdmin),
+  auth(USER_ROLE.user),
   validateRequest(podcastValidation.createPodcastValidationSchema),
   podcastController.createPodcast,
 );
 
 router.patch(
   '/update-podcast/:id',
-  auth(USER_ROLE.superAdmin),
+  auth(USER_ROLE.user),
   validateRequest(podcastValidation.updatePodcastValidationSchema),
   podcastController.updatePodcast,
 );
@@ -25,7 +25,7 @@ router.get('/all-podcasts', podcastController.getAllPodcasts);
 router.get('/get-single-podcast/:id', podcastController.getSinglePodcast);
 router.delete(
   '/delete-podcast/:id',
-  auth(USER_ROLE.superAdmin),
+  auth(USER_ROLE.user),
   podcastController.deletePodcast,
 );
 

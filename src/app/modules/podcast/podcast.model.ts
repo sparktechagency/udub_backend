@@ -5,6 +5,11 @@ const PodcastSchema = new Schema<IPodcast>(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
+    subCategory: {
+      type: Schema.Types.ObjectId,
+      ref: 'SubCategory',
+      required: true,
+    },
     name: { type: String, required: true },
     coverImage: { type: String, required: true },
     video_url: { type: String, required: true },

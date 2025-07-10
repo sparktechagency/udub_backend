@@ -9,8 +9,8 @@ const locationSchema = z.object({
 
 const createPodcastValidationSchema = z.object({
   body: z.object({
-    user: z.string({ required_error: 'User is required' }),
     category: z.string({ required_error: 'Category is required' }),
+    subCategory: z.string({ required_error: 'Category is required' }),
     name: z.string().min(1, 'Podcast name is required'),
     coverImage: z.string().url('Must be a valid URL'),
     video_url: z.string().url('Must be a valid video URL'),
