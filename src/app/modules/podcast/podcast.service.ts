@@ -4,12 +4,16 @@ import { IPodcast } from './podcast.interface';
 import Podcast from './podcast.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 
-const createPodcastIntoDB = async (payload: IPodcast) => {
-  return await Podcast.create(payload);
+const createPodcastIntoDB = async (userId: string, payload: IPodcast) => {
+  return await Podcast.create({ ...payload, user: userId });
 };
 
-const updatePodcastIntoDB = async (id: string, payload: Partial<IPodcast>) => {
-  const podcast = await Podcast.findById(id);
+const updatePodcastIntoDB = async (
+  userId: string,
+  id: string,
+  payload: Partial<IPodcast>,
+) => {
+  const podcast = await Podcast.findOne({ _id: id, user: userId });
   if (!podcast) {
     throw new AppError(httpStatus.NOT_FOUND, 'Podcast not found');
   }
@@ -43,8 +47,8 @@ const getSinglePodcast = async (id: string) => {
   return podcast;
 };
 
-const deletePodcastFromDB = async (id: string) => {
-  const podcast = await Podcast.findById(id);
+const deletePodcastFromDB = async (userId: string, id: string) => {
+  const podcast = await Podcast.findOne({ _id: id, user: userId });
   if (!podcast) {
     throw new AppError(httpStatus.NOT_FOUND, 'Podcast not found');
   }
