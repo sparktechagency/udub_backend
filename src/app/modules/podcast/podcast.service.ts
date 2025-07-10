@@ -1,21 +1,63 @@
-import httpStatus from "http-status";
-import AppError from "../../error/appError";
-import { IPodcast } from "./podcast.interface";
-import podcastModel from "./podcast.model";
+import httpStatus from 'http-status';
+import AppError from '../../error/appError';
+import { IPodcast } from './podcast.interface';
+import Podcast from './podcast.model';
+import QueryBuilder from '../../builder/QueryBuilder';
 
-const updateUserProfile = async (id: string, payload: Partial<IPodcast>) => {
-    if (payload.email || payload.username) {
-        throw new AppError(httpStatus.BAD_REQUEST, "You cannot change the email or username");
-    }
-    const user = await podcastModel.findById(id);
-    if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "Profile not found");
-    }
-    return await podcastModel.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
+const createPodcastIntoDB = async (payload: IPodcast) => {
+  return await Podcast.create(payload);
 };
 
-const PodcastServices = { updateUserProfile };
-export default PodcastServices;
+const updatePodcastIntoDB = async (id: string, payload: Partial<IPodcast>) => {
+  const podcast = await Podcast.findById(id);
+  if (!podcast) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Podcast not found');
+  }
+
+  return await Podcast.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+};
+
+const getAllPodcasts = async (query: Record<string, unknown>) => {
+  const resultQuery = new QueryBuilder(Podcast.find(), query)
+    .search(['name', 'title', 'description'])
+    .fields()
+    .filter()
+    .paginate()
+    .sort();
+
+  const result = await resultQuery.modelQuery;
+  const meta = await resultQuery.countTotal();
+
+  return { meta, result };
+};
+
+const getSinglePodcast = async (id: string) => {
+  const podcast = await Podcast.findById(id);
+  if (!podcast) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Podcast not found');
+  }
+
+  return podcast;
+};
+
+const deletePodcastFromDB = async (id: string) => {
+  const podcast = await Podcast.findById(id);
+  if (!podcast) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Podcast not found');
+  }
+
+  return await Podcast.findByIdAndDelete(id);
+};
+
+const podcastService = {
+  createPodcastIntoDB,
+  updatePodcastIntoDB,
+  getAllPodcasts,
+  getSinglePodcast,
+  deletePodcastFromDB,
+};
+
+export default podcastService;

@@ -1,24 +1,67 @@
-import httpStatus from "http-status";
-import catchAsync from "../../utilities/catchasync";
-import sendResponse from "../../utilities/sendResponse";
-import podcastServices from "./podcast.service";
+import httpStatus from 'http-status';
+import catchAsync from '../../utilities/catchasync';
+import sendResponse from '../../utilities/sendResponse';
+import podcastService from './podcast.service';
 
-const updateUserProfile = catchAsync(async (req, res) => {
-    const { files } = req;
-    if (files && typeof files === "object" && "profile_image" in files) {
-        req.body.profile_image = files["profile_image"][0].path;
-    }
-    const result = await podcastServices.updateUserProfile(
-        req.user.profileId,
-        req.body
-    );
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Profile updated successfully",
-        data: result,
-    });
+const createPodcast = catchAsync(async (req, res) => {
+  const result = await podcastService.createPodcastIntoDB(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Podcast created successfully',
+    data: result,
+  });
 });
 
-const PodcastController = { updateUserProfile };
-export default PodcastController;
+const updatePodcast = catchAsync(async (req, res) => {
+  const result = await podcastService.updatePodcastIntoDB(
+    req.params.id,
+    req.body,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Podcast updated successfully',
+    data: result,
+  });
+});
+
+const getAllPodcasts = catchAsync(async (req, res) => {
+  const result = await podcastService.getAllPodcasts(req.query);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Podcasts retrieved successfully',
+    data: result,
+  });
+});
+
+const getSinglePodcast = catchAsync(async (req, res) => {
+  const result = await podcastService.getSinglePodcast(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Podcast retrieved successfully',
+    data: result,
+  });
+});
+
+const deletePodcast = catchAsync(async (req, res) => {
+  const result = await podcastService.deletePodcastFromDB(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Podcast deleted successfully',
+    data: result,
+  });
+});
+
+const podcastController = {
+  createPodcast,
+  updatePodcast,
+  getAllPodcasts,
+  getSinglePodcast,
+  deletePodcast,
+};
+
+export default podcastController;
