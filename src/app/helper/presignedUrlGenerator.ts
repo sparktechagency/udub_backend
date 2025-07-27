@@ -98,6 +98,8 @@ export const generatePresignedUrl = async ({
     folder = 'uploads/audios/';
   } else if (fileCategory === 'material_image') {
     folder = 'uploads/project_material_image/';
+  } else if (fileCategory === 'project_document') {
+    folder = 'uploads/project_document/';
   }
 
   const fileName = `${folder}${timestamp}-${Math.random()
