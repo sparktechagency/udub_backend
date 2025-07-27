@@ -57,11 +57,21 @@ const getSingleImage = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteImage = catchAsync(async (req, res) => {
+  const result = await project_imageServices.deleteImage(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Image deleted successfully',
+    data: result,
+  });
+});
 
 const Project_imageController = {
   uploadImagesForProject,
   updateImage,
   getProjectImages,
   getSingleImage,
+  deleteImage,
 };
 export default Project_imageController;

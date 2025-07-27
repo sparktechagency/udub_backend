@@ -65,4 +65,15 @@ router.get(
   ProjectDocumentController.getSingleDocument,
 );
 
+router.delete(
+  '/delete/:id',
+  auth(
+    USER_ROLE.financeManager,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.superAdmin,
+  ),
+  ProjectDocumentController.deleteDocument,
+);
+
 export const projectDocumentRoutes = router;

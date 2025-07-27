@@ -49,5 +49,16 @@ router.get(
   ),
   Project_imageController.getSingleImage,
 );
+router.delete(
+  '/delete/:id',
+  auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.manager,
+    USER_ROLE.officeManager,
+    USER_ROLE.financeManager,
+    USER_ROLE.user,
+  ),
+  Project_imageController.deleteImage,
+);
 
 export const project_imageRoutes = router;

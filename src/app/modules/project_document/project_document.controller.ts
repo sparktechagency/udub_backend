@@ -57,10 +57,21 @@ const getSingleDocument = catchAsync(async (req, res) => {
   });
 });
 
+const deleteDocument = catchAsync(async (req, res) => {
+  const result = await ProjectDocumentService.deleteDocument(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Document deleted successfully',
+    data: result,
+  });
+});
+
 const ProjectDocumentController = {
   uploadImagesForProject,
   updateDocument,
   getProjectDocuments,
   getSingleDocument,
+  deleteDocument,
 };
 export default ProjectDocumentController;

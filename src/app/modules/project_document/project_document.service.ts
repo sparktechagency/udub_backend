@@ -112,10 +112,16 @@ const getSingleDocument = async (id: string) => {
   return result;
 };
 
+const deleteDocument = async (id: string) => {
+  const result = await ProjectDocument.findByIdAndDelete(id);
+  return result;
+};
+
 const ProjectDocumentService = {
   uploadDocumentsForProject,
   updateDocument,
   getProjectDocuments,
   getSingleDocument,
+  deleteDocument,
 };
 export default ProjectDocumentService;

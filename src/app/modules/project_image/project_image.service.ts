@@ -135,10 +135,16 @@ const getSingleImage = async (id: string) => {
   return result;
 };
 
+const deleteImage = async (id: string) => {
+  const result = await ProjectImage.findByIdAndDelete(id);
+  return result;
+};
+
 const Project_imageServices = {
   uploadImageForProject,
   updateImage,
   getProjectImages,
   getSingleImage,
+  deleteImage,
 };
 export default Project_imageServices;
