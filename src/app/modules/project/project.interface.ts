@@ -16,4 +16,6 @@ export interface IProject {
   smartSheetId: string;
   isDeleted: false;
   locationDropDownItems: string[];
+  paymentInfoLink?: string;
+  smartsheetLink?: string;
 }

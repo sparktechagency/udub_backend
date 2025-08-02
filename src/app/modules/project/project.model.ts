@@ -41,7 +41,15 @@ const ProjectSchema = new Schema<IProject>(
       type: [String],
       required: true,
     },
-  },
+    paymentInfoLink:{
+      type: String,
+      default: '',
+    },
+    smartsheetLink:{
+      type:String,
+      default: '',
+    }
+    },
   { timestamps: true },
 );
 
