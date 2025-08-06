@@ -14,7 +14,14 @@ import { ENUM_NOTIFICATION_TYPE } from '../../utilities/enum';
 import Conversation from '../conversation/conversation.model';
 import { CONVERSATION_TYPE } from '../conversation/conversation.enum';
 import getSpecificSheet from '../../helper/getSpecificSheet';
-import { deleteFileFromS3 } from '../../helper/deleteFileFromS3';
+import {
+  deleteFileFromS3,
+  deleteFilesFromS3,
+} from '../../helper/deleteFileFromS3';
+import { ProjectImage } from '../project_image/project_image.model';
+import { ProjectDocument } from '../project_document/project_document.model';
+import { Material } from '../material/material.model';
+import { extractS3Key } from '../../helper/extractS3Key';
 
 const createProject = async (payload: IProject) => {
   const io = getIO();
@@ -243,16 +250,63 @@ const getSingleProject = async (id: string) => {
   return result;
 };
 
+// const deleteProject = async (id: string) => {
+//   const project = await Project.findById(id);
+//   if (!project) {
+//     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
+//   }
+//   const result = await Project.findByIdAndDelete(id);
+
+//   await Conversation.updateMany({ projectId: id }, { isDeleted: true });
+
+//   // TOOD: need to delete corrospoding images and documents
+
+//   await ProjectImage.deleteMany({ projectId: id });
+//   await ProjectDocument.deleteMany({ projectId: id });
+//   await Material.deleteMany({ project: id });
+
+//   return result;
+// };
+
 const deleteProject = async (id: string) => {
   const project = await Project.findById(id);
   if (!project) {
     throw new AppError(httpStatus.NOT_FOUND, 'Project not found');
   }
-  const result = await Project.findByIdAndDelete(id);
 
+  // Fetch all related entities
+  const [projectImages, projectDocuments, materials] = await Promise.all([
+    ProjectImage.find({ projectId: id }),
+    ProjectDocument.find({ projectId: id }),
+    Material.find({ project: id }),
+  ]);
+
+  // Extract all S3 keys
+  const imageKeys = projectImages.map((img) => extractS3Key(img.image_url));
+  const documentKeys = projectDocuments.map((doc) =>
+    extractS3Key(doc.document_url),
+  );
+  const materialKeys = materials
+    .filter((mat) => mat.image)
+    .map((mat) => extractS3Key(mat.image!));
+
+  const allKeys = [...imageKeys, ...documentKeys, ...materialKeys];
+
+  // Batch delete files from S3
+  await deleteFilesFromS3(allKeys);
+
+  // Soft delete conversations
   await Conversation.updateMany({ projectId: id }, { isDeleted: true });
 
-  // TOOD: need to delete corrospoding images and documents
+  // Delete related DB records
+  await Promise.all([
+    ProjectImage.deleteMany({ projectId: id }),
+    ProjectDocument.deleteMany({ projectId: id }),
+    Material.deleteMany({ project: id }),
+  ]);
+
+  // Delete the project itself
+  const result = await Project.findByIdAndDelete(id);
 
   return result;
 };

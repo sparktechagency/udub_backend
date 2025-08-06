@@ -100,3 +100,30 @@ export const deleteFileFromS3 = async (fileName: string) => {
     }
   }
 };
+
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
+
+export const deleteFilesFromS3 = async (fileNames: string[]) => {
+  const bucket = process.env.AWS_BUCKET_NAME!;
+
+  const decodedKeys = fileNames.map((fileName) => ({
+    Key: decodeURIComponent(fileName),
+  }));
+
+  if (decodedKeys.length === 0) return;
+
+  const deleteCommand = new DeleteObjectsCommand({
+    Bucket: bucket,
+    Delete: {
+      Objects: decodedKeys,
+      Quiet: true,
+    },
+  });
+
+  try {
+    const response = await s3.send(deleteCommand);
+    console.log('Batch deleted files:', response.Deleted);
+  } catch (error) {
+    console.error('Error deleting files in batch from S3:', error);
+  }
+};
