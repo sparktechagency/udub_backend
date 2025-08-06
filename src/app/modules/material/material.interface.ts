@@ -8,4 +8,5 @@ export interface IMaterial {
   model: string;
   image: string;
   projectOwner: Types.ObjectId[];
+  notes: string;
 }

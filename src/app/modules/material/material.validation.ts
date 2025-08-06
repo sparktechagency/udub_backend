@@ -7,6 +7,7 @@ export const materialValidationSchema = z.object({
     manufacturer: z.string().optional(),
     model: z.string().optional(),
     image: z.string().optional(),
+    notes: z.string().optional(),
   }),
 });
 const updateMaterialValidationSchema = z.object({
@@ -15,6 +16,7 @@ const updateMaterialValidationSchema = z.object({
     manufacturer: z.string().optional(),
     model: z.string().optional(),
     image: z.string().optional(),
+    notes: z.string().optional(),
   }),
 });
 

@@ -18,6 +18,7 @@ const MaterialSchema = new Schema<IMaterial>(
     manufacturer: { type: String, required: false },
     model: { type: String, required: false },
     image: { type: String, required: false },
+    notes: { type: String, required: false },
   },
   { timestamps: true },
 );
