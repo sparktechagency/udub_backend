@@ -37,9 +37,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
     }
-    if (user.isDeleted) {
-      throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-    }
+
     if (user.isBlock) {
       throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
     }

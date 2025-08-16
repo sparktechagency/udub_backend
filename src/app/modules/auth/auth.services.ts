@@ -19,9 +19,7 @@ const loginUserIntoDB = async (payload: TLoginUser) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -71,9 +69,7 @@ const changePasswordIntoDB = async (
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -107,9 +103,7 @@ const refreshToken = async (token: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -141,9 +135,7 @@ const forgetPassword = async (email: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -195,9 +187,7 @@ const verifyResetOtp = async (email: string, resetCode: number) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -239,9 +229,6 @@ const resetPassword = async (payload: {
     );
   }
 
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -297,9 +284,7 @@ const resendResetCode = async (email: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
@@ -326,9 +311,7 @@ const resendVerifyCode = async (email: string) => {
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user does not exist');
   }
-  if (user.isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is already deleted');
-  }
+
   if (user.isBlock) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
   }
