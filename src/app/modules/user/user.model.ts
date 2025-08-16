@@ -54,10 +54,6 @@ const userSchema = new Schema<TUser>(
     codeExpireIn: {
       type: Date,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,

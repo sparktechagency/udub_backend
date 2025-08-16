@@ -49,17 +49,13 @@ const deleteUserAccount = async (user: JwtPayload, password: string) => {
   if (!(await User.isPasswordMatched(password, userData?.password))) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password do not match');
   }
-  await User.findByIdAndUpdate(
-    user.id,
-    { isDeleted: true },
-    { new: true, runValidators: true },
-  );
+  await User.findByIdAndDelete(user.id);
 
   return null;
 };
 
 const getAllUserFromDB = async (query: Record<string, unknown>) => {
-  const resultQuery = new QueryBuilder(User.find({ isDeleted: false }), query)
+  const resultQuery = new QueryBuilder(User.find(), query)
     .search(['name', 'email'])
     .filter()
     .sort()
@@ -75,7 +71,6 @@ const getAllUserFromDB = async (query: Record<string, unknown>) => {
 const getAllEmployee = async (query: Record<string, unknown>) => {
   const resultQuery = new QueryBuilder(
     User.find({
-      isDeleted: false,
       $or: [
         { role: USER_ROLE.financeManager },
         { role: USER_ROLE.manager },
@@ -103,11 +98,7 @@ const deleteAccount = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }
   // const result = await User.findByIdAndDelete(id);
-  const result = await User.findByIdAndUpdate(
-    id,
-    { isDeleted: true },
-    { new: true, runValidators: true },
-  );
+  const result = await User.findByIdAndDelete(id);
   return result;
 };
 

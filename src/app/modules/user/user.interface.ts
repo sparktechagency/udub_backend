@@ -16,7 +16,6 @@ export interface TUser {
   resetCode: number;
   isResetVerified: boolean;
   codeExpireIn: Date;
-  isDeleted: boolean;
 }
 export interface TLoginUser {
   email: string;
