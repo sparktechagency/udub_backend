@@ -114,6 +114,9 @@ const getSingleDocument = async (id: string) => {
 
 const deleteDocument = async (id: string) => {
   const result = await ProjectDocument.findByIdAndDelete(id);
+  if (result?.document_url) {
+    await deleteFileFromS3(result.document_url.split('cloudfront.net/')[1]);
+  }
   return result;
 };
 

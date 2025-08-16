@@ -137,6 +137,10 @@ const getSingleImage = async (id: string) => {
 
 const deleteImage = async (id: string) => {
   const result = await ProjectImage.findByIdAndDelete(id);
+
+  if (result?.image_url) {
+    await deleteFileFromS3(result.image_url.split('cloudfront.net/')[1]);
+  }
   return result;
 };
 
