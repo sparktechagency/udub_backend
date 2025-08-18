@@ -18,4 +18,8 @@ export interface IProject {
   locationDropDownItems: string[];
   paymentInfoLink?: string;
   smartsheetLink?: string;
+  recentlyCompletedLink?: string;
+  twoWeekLookAheadLink?: string;
+  twoMonthLookAheadLink?: string;
+  fullScheduleLink?: string;
 }

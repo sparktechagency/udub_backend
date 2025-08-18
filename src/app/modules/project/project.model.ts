@@ -41,15 +41,31 @@ const ProjectSchema = new Schema<IProject>(
       type: [String],
       required: true,
     },
-    paymentInfoLink:{
+    paymentInfoLink: {
       type: String,
       default: '',
     },
-    smartsheetLink:{
-      type:String,
+    smartsheetLink: {
+      type: String,
       default: '',
-    }
     },
+    recentlyCompletedLink: {
+      type: String,
+      default: '',
+    },
+    twoWeekLookAheadLink: {
+      type: String,
+      default: '',
+    },
+    twoMonthLookAheadLink: {
+      type: String,
+      default: '',
+    },
+    fullScheduleLink: {
+      type: String,
+      default: '',
+    },
+  },
   { timestamps: true },
 );
 
