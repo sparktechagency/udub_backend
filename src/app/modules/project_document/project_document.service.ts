@@ -76,12 +76,10 @@ const updateDocument = async (
     },
   );
   // TOOD: need to be change in store image another way
-  if (payload.document_url) {
-    if (payload.document_url) {
-      const oldFileName = document.document_url.split('cloudfront.net/')[1];
-      console.log('oldfile name', oldFileName);
-      await deleteFileFromS3(oldFileName);
-    }
+  if (payload.document_url && document.document_url) {
+    const oldFileName = document.document_url.split('cloudfront.net/')[1];
+    console.log('oldfile name', oldFileName);
+    await deleteFileFromS3(oldFileName);
   }
   return result;
 };
